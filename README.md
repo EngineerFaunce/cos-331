@@ -1,2 +1,2 @@
-# COS-331
-
+## Description
+Code repository for my Operating Systems class.
