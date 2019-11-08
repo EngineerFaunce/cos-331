@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
                         printf("Removing PID %d\n", Current->PID) ;
                         DeletePCB(Current) ;
                 }
-
                 else
                 {
                         SaveState(&Current) ;
