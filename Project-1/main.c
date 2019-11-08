@@ -73,13 +73,7 @@ int main(int argc, char *argv[])
         }
 
         printf("\n-----FINAL MEMORY-----\n");
-        /* This is a hard-wired call to printMEM because without it the
-           function would only print out the first 40 or so memory locations.
-           Also, while each program is correctly stored in memory,the data for 
-           each program is not stored in their respective memory location (after
-           the program instructions).
-        */
-	printMEM(1000) ;
+	printMEM(Max_Line + 1) ;
 }	
 
 void Create_PCBs()
