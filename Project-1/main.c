@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
                 }
 
                 PrintQ(RQ) ;
-                sleep(1) ;
+                //sleep(1) ;
                 if (RQ == NULL)
                         break ;
         }
