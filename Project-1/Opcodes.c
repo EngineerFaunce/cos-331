@@ -299,7 +299,7 @@ int ExecuteProc(struct PCB *Current)
     }
 
 	// modified
-	void OP7(char *IR, int Base)
+	void OP7(char *IR)
 	{
 		int PREG, Value, Address ;
         printf("Opcode 7: Store ACC Direct Addressing\n") ;
