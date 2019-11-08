@@ -102,28 +102,29 @@ int ExecuteProc(struct PCB *Current)
 	//returns the integer value of operands 1 and 2 combined to form a 4-byte integer.
 	int ParseOP1andOP2Imm(char *IR) 
 	{
-	 int VAL = (int) (IR[2] - 48) * 1000 + (int) (IR[3] - 48) * 100
-		 + (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
-	 return(VAL) ;
+		int VAL = (int) (IR[2] - 48) * 1000 + (int) (IR[3] - 48) * 100
+			+ (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
+		return(VAL) ;
 	}
 
 
 	// returns the register number of the register used as operand  1 of an instruction. 
 	// Can be either Pointer or General-Purpose register. 
 	int ParseOp1Reg (char *IR)  
-    	{
-      	 int VAL ;
-	 VAL = (int) (IR[3] - 48) ;	
-	 return(VAL) ;
-    	}
+    {
+      	int VAL ;
+	 	VAL = (int) (IR[3] - 48) ;	
+	 	return(VAL) ;
+    }
 
 
 	// returns the register number of a register used as operand  2 of an instruction. 
 	// Can be either a Pointer or General-Purpose register. 
 	int ParseOp2Reg (char *IR)  
-	{int VAL ; 
-	 VAL = (int) (IR[5] - 48) ;
-         return(VAL) ;
+	{
+		int VAL ; 
+		VAL = (int) (IR[5] - 48) ;
+        return(VAL) ;
 	}
 
 	// returns the data stored at memory location Memory_Location
@@ -255,14 +256,14 @@ int ExecuteProc(struct PCB *Current)
 	}
     
 	// modify
-	void OP4(char *IR)
+	void OP4(char *IR, int Base)
 	{
 		int PREG, Value, Address ;
 		printf("Opcode 4: Load ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
 		Address = PRegs[PREG]; 
-		Value = FetchData(Address) ;
+		Value = FetchData(Address+Base) ;
 		ACC = Value ;
 		PrintRegs() ;
 		printf("************************************************\n\n") ;
@@ -290,9 +291,9 @@ int ExecuteProc(struct PCB *Current)
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
 		Address = PRegs[PREG] ;
-		StoreData(Address, ACC) ;
+		StoreData(Address+Base, ACC) ;
 		PrintRegs() ;
-		PrintLocation(Address) ;
+		PrintLocation(Address+Base) ;
 		printf("********************************************\n\n") ;
     }
 
@@ -318,8 +319,8 @@ int ExecuteProc(struct PCB *Current)
     	PREG = ParseOp2Reg(IR) ;
         Address = PRegs[PREG] ;
 	 	Value = RRegs[RREG] ;
-        StoreData(Address, Value) ;
-	 	PrintLocation(Address) ;
+        StoreData(Address+Base, Value) ;
+	 	PrintLocation(Address+Base) ;
 	 	printf("***********************************************\n\n") ;
     }
 
@@ -346,7 +347,7 @@ int ExecuteProc(struct PCB *Current)
         RREG = ParseOp1Reg(IR) ;
         PREG = ParseOp2Reg(IR) ;
 	 	Address = PRegs[PREG] ;
-        Value = FetchData(Address) ;
+        Value = FetchData(Address+Base) ;
 	 	RRegs[RREG] = Value ;
 	 	PrintRegs() ;
 	 	printf("************************************************\n\n") ;
@@ -379,9 +380,14 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("******************************************************\n\n") ;
     }
 
+	/* I think I can delete int Value and Address here
+	 * so if after compiling and it breaks, come back
+	 * and fix this future me
+	 */
 	void OP13(char *IR)
     {
-		int RREG, PREG, Value, Address ;
+		int RREG, PREG ;
+		// int Value, Address ;
         printf("Opcode 13: Register to Register Transfer\n") ;
 		PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -393,7 +399,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP14(char *IR)      
     {
-		int RREG, PREG, Value, Address ;
+		int RREG, PREG ;
+		// int Value, Address ;
         printf("Opcode 14: Load Accumulator From Register\n") ;
 		PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -404,7 +411,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP15(char *IR)
     {
-		int RREG, PREG, Value, Address ;
+		int RREG, PREG ;
+		// int Value, Address ;
         printf("Opcode 15: Load Register From Accumulator \n") ;
 		PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
