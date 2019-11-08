@@ -1,3 +1,7 @@
+# Usage:
+# make			# compiles source files
+# make clean	# removes compiled files
+
 CFLAGS = -std=c99 -g
   
 all: source
