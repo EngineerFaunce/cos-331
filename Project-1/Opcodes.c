@@ -143,42 +143,42 @@ int ExecuteProc(struct PCB *Current)
 	{ printf("IR: %s\n", IR) ; }
 
 	void PrintLocation(int Address)
-	{ int i ;
-	  printf("Memory Location[%d]: ", Address) ;
-	  for (i = 0; i < 6 ; i++)
-	    printf(" %c ", memory[Address][i]) ;
-	  printf("\n") ;
+	{
+		int i ;
+		printf("Memory Location[%d]: ", Address) ;
+		for (i = 0; i < 6 ; i++)
+			printf(" %c ", memory[Address][i]) ;
+		printf("\n") ;
 	}
+
 	/*Converts Value from an int to a character string and stores 
 	it in memory[Memory_Location]
 	*/
-
 	void StoreData(int Memory_Location, int Value)
 	{
-	 if (Memory_Location > Max_Line)
-	   Max_Line = Memory_Location ;
-    	 int start = 2;
-    	 char temp[6];
-    	 temp[0] = 'Z'; temp[1] = 'Z';
-    	 if(Value < 1000)
-    		{start++;
-        	 temp[2] = '0';
-    		}
-	 if(Value < 100)
-    		{ start++;
-       		  temp[3] = '0';
-    		}
-    	
-	 if(Value< 10)
-    		{
-       		 start++;
-       		 temp[4] = '0';
-    		}
+		if (Memory_Location > Max_Line)
+	   		Max_Line = Memory_Location ;
+		int start = 2;
+		char temp[6];
+		temp[0] = 'Z'; temp[1] = 'Z';
+		if(Value < 1000) {
+			start++;
+			temp[2] = '0';
+		}
+		if(Value < 100) {
+			start++;
+			temp[3] = '0';
+		}
+			
+		if(Value< 10) {
+			start++;
+			temp[4] = '0';
+		}
     
-    	 sprintf(&temp[start], "%d", Value);
+    	sprintf(&temp[start], "%d", Value);
     
-    	 for(int i = 0; i < 6; i++)
-       	  memory[Memory_Location][i] = temp[i];
+    	for(int i = 0; i < 6; i++)
+       		memory[Memory_Location][i] = temp[i];
 	}
 
 	/*Prints out the value of the Program Reisters*/
@@ -207,40 +207,40 @@ int ExecuteProc(struct PCB *Current)
 
 
 	/*Simulate Execution of Opcodes*/
-
 	void OP0(char *IR)
-	{int PREG, VAL ;
-	 printf("Opcode = 0. Load Pointer Immediate\n") ;
-   	 PrintIR(IR) ; 
-  	 PREG = ParseOp1Reg(IR) ;
-  	 VAL = 	ParseOp2 (IR) ;
-	 PRegs[PREG] = VAL ;
-	 PrintRegs() ;
-	 printf("*************************************************\n\n") ;
+	{
+		int PREG, VAL ;
+		printf("Opcode = 0. Load Pointer Immediate\n") ;
+		PrintIR(IR) ; 
+		PREG = ParseOp1Reg(IR) ;
+		VAL = 	ParseOp2 (IR) ;
+		PRegs[PREG] = VAL ;
+		PrintRegs() ;
+		printf("*************************************************\n\n") ;
 	}
 
 	void OP1(char *IR)
-	{int PREG, VAL ;
-         printf("Opcode = 1. ADD Pointer Immediate\n"); 
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL =  ParseOp2 (IR) ;
-	 PRegs[PREG] += VAL ;
-	 PrintRegs() ;
-	 printf("************************************************\n\n") ;
-
+	{
+		int PREG, VAL ;
+        printf("Opcode = 1. ADD Pointer Immediate\n"); 
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL =  ParseOp2 (IR) ;
+	 	PRegs[PREG] += VAL ;
+	 	PrintRegs() ;
+	 	printf("************************************************\n\n") ;
 	}
 
 	void OP2(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 2. Subtract Pointer Immediate\n") ;
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL =  ParseOp2 (IR) ;
-	 PRegs[PREG] -= VAL ;
-	 PrintRegs() ;
-	 printf("***********************************************\n\n") ;
-
+    {
+		int PREG, VAL ;
+        printf("Opcode = 2. Subtract Pointer Immediate\n") ;
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL =  ParseOp2 (IR) ;
+	 	PRegs[PREG] -= VAL ;
+	 	PrintRegs() ;
+	 	printf("***********************************************\n\n") ;
 	}
 
 	void OP3(char *IR)
@@ -253,20 +253,22 @@ int ExecuteProc(struct PCB *Current)
 		PrintRegs() ;
 		printf("************************************************\n\n") ;
 	}
-        
+    
+	// modify
 	void OP4(char *IR)
-	{int PREG, Value, Address ;
-	 printf("Opcode 4: Load ACC Register Addressing\n") ;
-	 PrintIR(IR) ;
-	 PREG = ParseOp1Reg(IR) ;
-	 Address = PRegs[PREG]; 
-	 Value = FetchData(Address) ;
-	 ACC = Value ;
-	 PrintRegs() ;
-	 printf("************************************************\n\n") ;
+	{
+		int PREG, Value, Address ;
+		printf("Opcode 4: Load ACC Register Addressing\n") ;
+		PrintIR(IR) ;
+		PREG = ParseOp1Reg(IR) ;
+		Address = PRegs[PREG]; 
+		Value = FetchData(Address) ;
+		ACC = Value ;
+		PrintRegs() ;
+		printf("************************************************\n\n") ;
 	}
 
-	// modify
+	// modified
 	void OP5(char *IR, int Base)
 	{
 		int PREG, Value, Address ;
@@ -280,7 +282,8 @@ int ExecuteProc(struct PCB *Current)
 		printf("**********************************************\n\n") ;
     }
 
-	void OP6(char *IR)
+	// modify
+	void OP6(char *IR, int Base)
     {
 		int PREG, Value, Address ;
         printf("Opcode 6: Store ACC Register Addressing\n") ;
@@ -293,7 +296,7 @@ int ExecuteProc(struct PCB *Current)
 		printf("********************************************\n\n") ;
     }
 
-	// modify
+	// modified
 	void OP7(char *IR, int Base)
 	{
 		int PREG, Value, Address ;
@@ -305,349 +308,370 @@ int ExecuteProc(struct PCB *Current)
 		printf("*********************************************\n\n") ;
     }
 
+	// modify
 	void OP8(char *IR)
-        {int PREG, RREG, Value, Address ;
-         printf("Opcode 8: Store Register to Memory:  Register Addressing\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         PREG = ParseOp2Reg(IR) ;
-         Address = PRegs[PREG] ;
-	 Value = RRegs[RREG] ;
-         StoreData(Address, Value) ;
-	 PrintLocation(Address) ;
-	 printf("***********************************************\n\n") ;
-        }
+    {
+		int PREG, RREG, Value, Address ;
+        printf("Opcode 8: Store Register to Memory:  Register Addressing\n") ;
+	 	PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+    	PREG = ParseOp2Reg(IR) ;
+        Address = PRegs[PREG] ;
+	 	Value = RRegs[RREG] ;
+        StoreData(Address, Value) ;
+	 	PrintLocation(Address) ;
+	 	printf("***********************************************\n\n") ;
+    }
 
-	// modify
+	// modified
 	void OP9(char *IR, int Base)
-        {int RREG, Value, Address ;
-         printf("Opcode 9: Store Register to Memory: Direct Addressing\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         Address = ParseOp2(IR) ;
-         printf("Storing Reg %d Value %d to Memory Address %d\n",RREG,RRegs[RREG],Address+Base) ;
-         StoreData(Address+Base, RRegs[RREG]) ;
-	 PrintLocation(Address+Base) ;
-	 printf("**********************************************\n\n") ;
-        }
-
-	void OP10(char *IR)
-	{int RREG, PREG, Value, Address ;
-         printf("Opcode 10: Load Register From Memory: Register Addressing\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         PREG = ParseOp2Reg(IR) ;
-	 Address = PRegs[PREG] ;
-         Value = FetchData(Address) ;
-	 RRegs[RREG] = Value ;
-	 PrintRegs() ;
-	 printf("************************************************\n\n") ;
-        }
+    {
+		int RREG, Value, Address ;
+        printf("Opcode 9: Store Register to Memory: Direct Addressing\n") ;
+	 	PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        Address = ParseOp2(IR) ;
+        printf("Storing Reg %d Value %d to Memory Address %d\n",RREG,RRegs[RREG],Address+Base) ;
+        StoreData(Address+Base, RRegs[RREG]) ;
+	 	PrintLocation(Address+Base) ;
+	 	printf("**********************************************\n\n") ;
+    }
 
 	// modify
+	void OP10(char *IR)
+	{
+		int RREG, PREG, Value, Address ;
+        printf("Opcode 10: Load Register From Memory: Register Addressing\n") ;
+	 	PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        PREG = ParseOp2Reg(IR) ;
+	 	Address = PRegs[PREG] ;
+        Value = FetchData(Address) ;
+	 	RRegs[RREG] = Value ;
+	 	PrintRegs() ;
+	 	printf("************************************************\n\n") ;
+    }
+
+	// modified
 	void OP11(char *IR, int Base)
-        {int RREG, PREG, Value, Address ;
-         printf("Opcode 11: Load Register From Memory: Direct Addressing\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         Address = ParseOp2(IR) ;
-         Value = FetchData(Address+Base) ;
-         RRegs[RREG] = Value ;
-	 PrintRegs() ;
-	 printf("*****************************************************\n\n") ;
-        }
+    {
+		int RREG, PREG, Value, Address ;
+        printf("Opcode 11: Load Register From Memory: Direct Addressing\n") ;
+	 	PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        Address = ParseOp2(IR) ;
+        Value = FetchData(Address+Base) ;
+        RRegs[RREG] = Value ;
+	 	PrintRegs() ;
+	 	printf("*****************************************************\n\n") ;
+    }
 	
 	void OP12(char *IR)
-        {int RREG, VAL ;
-         printf("Opcode = 12. Load Register R0 Immediate\n");
-	 PrintIR(IR) ;
-         PrintIR(IR) ;
-
-         VAL = ParseOP1andOP2Imm(IR) ;
-	 printf("P1&2Imm returned %d\n", VAL) ;
-	 RRegs[0]  = VAL ;
-	 PrintRegs() ;
-	 printf("******************************************************\n\n") ;
-        }
+    {
+		int RREG, VAL ;
+        printf("Opcode = 12. Load Register R0 Immediate\n");
+	 	PrintIR(IR) ;
+        PrintIR(IR) ;
+		VAL = ParseOP1andOP2Imm(IR) ;
+	 	printf("P1&2Imm returned %d\n", VAL) ;
+	 	RRegs[0]  = VAL ;
+	 	PrintRegs() ;
+	 	printf("******************************************************\n\n") ;
+    }
 
 	void OP13(char *IR)
-        {int RREG, PREG, Value, Address ;
-         printf("Opcode 13: Register to Register Transfer\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         PREG = ParseOp2Reg(IR) ;
-         RRegs[RREG] = RRegs[PREG] ;
-	 PrintRegs() ;
-	 printf("******************************************************\n\n") ;
-        }
+    {
+		int RREG, PREG, Value, Address ;
+        printf("Opcode 13: Register to Register Transfer\n") ;
+		PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        PREG = ParseOp2Reg(IR) ;
+        RRegs[RREG] = RRegs[PREG] ;
+		PrintRegs() ;
+		printf("******************************************************\n\n") ;
+    }
 
 	void OP14(char *IR)      
-        {int RREG, PREG, Value, Address ;
-         printf("Opcode 14: Load Accumulator From Register\n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-	 ACC = RRegs[RREG] ;
-	 PrintRegs() ;
-	 printf("***************************************************\n\n") ;
-        }
+    {
+		int RREG, PREG, Value, Address ;
+        printf("Opcode 14: Load Accumulator From Register\n") ;
+		PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+	 	ACC = RRegs[RREG] ;
+	 	PrintRegs() ;
+	 	printf("***************************************************\n\n") ;
+    }
 
 	void OP15(char *IR)
-        {int RREG, PREG, Value, Address ;
-         printf("Opcode 15: Load Register From Accumulator \n") ;
-	 PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         RRegs[RREG] = ACC ;
-	 PrintRegs() ;
-	 printf("*************************************************\n\n") ;
-        }
+    {
+		int RREG, PREG, Value, Address ;
+        printf("Opcode 15: Load Register From Accumulator \n") ;
+		PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        RRegs[RREG] = ACC ;
+		PrintRegs() ;
+		printf("*************************************************\n\n") ;
+    }
 
 	
 	void OP16(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 16. Add Accumulator Immediate\n");
-         PrintIR(IR) ;
-         VAL = ParseOP1andOP2Imm(IR) ;
-         ACC += VAL ;
-         printf("ADDED %d to ACC.\n", VAL) ;
-         PrintRegs() ;
-	 printf("**************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 16. Add Accumulator Immediate\n");
+        PrintIR(IR) ;
+        VAL = ParseOP1andOP2Imm(IR) ;
+        ACC += VAL ;
+        printf("ADDED %d to ACC.\n", VAL) ;
+        PrintRegs() ;
+	 	printf("**************************************************\n\n") ;
+    }
 
 	void OP17(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 17. Substract Accumulator Immediate\n");
-         PrintIR(IR) ;
-         VAL = ParseOP1andOP2Imm(IR) ;
-         ACC -= VAL ;
-         PrintRegs() ;
-	 printf("**************************************************\n\n") ;
-        } 
+    {
+		int PREG, VAL ;
+        printf("Opcode = 17. Substract Accumulator Immediate\n");
+        PrintIR(IR) ;
+        VAL = ParseOP1andOP2Imm(IR) ;
+        ACC -= VAL ;
+        PrintRegs() ;
+	 	printf("**************************************************\n\n") ;
+    } 
 
 	void OP18(char *IR)
-        {int RREG, VAL ;
-         printf("Opcode = 18. Add contents of Register to  Accumulator \n");
-         PrintIR(IR) ;
-	 RREG = ParseOp1Reg(IR) ;
-         ACC  += RRegs[RREG] ;
-         PrintRegs() ;
-	 printf("****************************************************\n\n") ;
-        }
+    {
+		int RREG, VAL ;
+    	printf("Opcode = 18. Add contents of Register to  Accumulator \n");
+        PrintIR(IR) ;
+		RREG = ParseOp1Reg(IR) ;
+        ACC  += RRegs[RREG] ;
+        PrintRegs() ;
+		printf("****************************************************\n\n") ;
+    }
 
 	void OP19(char *IR)
-        {int RREG, VAL ;
-         printf("Opcode = 19. Subtract contents of Register From  Accumulator \n");
-         PrintIR(IR) ;
-         RREG = ParseOp1Reg(IR) ;
-         ACC  -= RRegs[RREG] ;
-         PrintRegs() ;
-	 printf("*****************************************************\n\n") ;
-        }
+    {
+		int RREG, VAL ;
+        printf("Opcode = 19. Subtract contents of Register From  Accumulator \n");
+        PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+        ACC  -= RRegs[RREG] ;
+        PrintRegs() ;
+		printf("*****************************************************\n\n") ;
+    }
 
 	void OP20(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 20. Add to Accumulator Register Addressing\n")  ;
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-	 VAL  = FetchData(PRegs[PREG]) ;
-         ACC  += VAL ;
-         PrintRegs() ;
-	 printf("**********************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 20. Add to Accumulator Register Addressing\n")  ;
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+	 	VAL  = FetchData(PRegs[PREG]) ;
+        ACC  += VAL ;
+        PrintRegs() ;
+	 	printf("**********************************************************\n\n") ;
+    }
 
-	// modify
+	// modified
 	void OP21(char *IR, int Base)
-        {int Address, PREG, VAL ;
-         printf("Opcode = 21. Add to Accumulator Direct Addressing\n")  ; 
-         PrintIR(IR) ;
-         Address = ParseOp1(IR) ;
-         VAL  = FetchData(Address+Base) ;
-         ACC  += VAL ;
-         PrintRegs() ;
-	 printf("*******************************************************\n\n") ;
+    {
+		int Address, PREG, VAL ;
+        printf("Opcode = 21. Add to Accumulator Direct Addressing\n")  ; 
+        PrintIR(IR) ;
+        Address = ParseOp1(IR) ;
+        VAL  = FetchData(Address+Base) ;
+        ACC  += VAL ;
+        PrintRegs() ;
+	 	printf("*******************************************************\n\n") ;
 	}
 
 	void OP22(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 22. Subtract From Accumulator Register Addressing\n")  ; 
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL  = FetchData(PRegs[PREG]) ;
-         ACC  -= VAL ;
-         PrintRegs() ;
-	 printf("********************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 22. Subtract From Accumulator Register Addressing\n")  ; 
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL  = FetchData(PRegs[PREG]) ;
+        ACC  -= VAL ;
+        PrintRegs() ;
+	 	printf("********************************************************\n\n") ;
+    }
 
-	// modify
+	// modified
 	void OP23(char *IR, int Base)
-        {int Address, PREG, VAL ;
-         printf("Opcode = 23. Subtract From Accumulator Direct Addressing\n")  ;
-         PrintIR(IR) ;
-         Address = ParseOp1(IR) ;
-         VAL  = FetchData(Address+Base) ;
-         ACC  -= VAL ;
-         PrintRegs() ;
-	 printf("*******************************************************\n\n") ;
-        }
+    {
+		int Address, PREG, VAL ;
+        printf("Opcode = 23. Subtract From Accumulator Direct Addressing\n")  ;
+        PrintIR(IR) ;
+        Address = ParseOp1(IR) ;
+    	VAL  = FetchData(Address+Base) ;
+        ACC  -= VAL ;
+        PrintRegs() ;
+	 	printf("*******************************************************\n\n") ;
+    }
 
 	void OP24(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 24. Compare Equal Register Addressing\n") ;
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL  = FetchData(PRegs[PREG]) ;
-	 if (ACC == VAL)
-	   PSW[0] = 'T' ;
-	 else
-	   PSW[0] = 'F' ;
-	 printf("PSW[0] = %c\n", PSW[0]) ;
-	 printf("*********************************************************\n\n") ;
+    {
+		int PREG, VAL ;
+        printf("Opcode = 24. Compare Equal Register Addressing\n") ;
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL  = FetchData(PRegs[PREG]) ;
+	 	if (ACC == VAL)
+	   		PSW[0] = 'T' ;
+	 	else
+	   		PSW[0] = 'F' ;
+	 	printf("PSW[0] = %c\n", PSW[0]) ;
+		printf("*********************************************************\n\n") ;
 	}
 
 	void OP25(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 25. Compare Less Register Addressing\n") ;
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL  = FetchData(PRegs[PREG]) ;
-         if (ACC < VAL)
-           PSW[0] = 'T' ;
-         else
-           PSW[0] = 'F' ;
-         printf("PSW[0] = %c\n", PSW[0]) ;
-	 printf("********************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 25. Compare Less Register Addressing\n") ;
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL  = FetchData(PRegs[PREG]) ;
+        if (ACC < VAL)
+        	PSW[0] = 'T' ;
+        else
+        	PSW[0] = 'F' ;
+        printf("PSW[0] = %c\n", PSW[0]) ;
+		printf("********************************************************\n\n") ;
+    }
 
 	void OP26(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 26. Compare Greater Register Addressing\n") ;
-         PrintIR(IR) ;
-         PREG = ParseOp1Reg(IR) ;
-         VAL  = FetchData(PRegs[PREG]) ;
-	 printf("Pointer Register = P%d. Memory at Location %d is: \n", PREG, PRegs[PREG]);
-	 PrintLocation(PRegs[PREG]) ;
-	 printf("Comparing ACC = %d > %d\n", ACC, VAL) ;
-         if (ACC > VAL)
-           PSW[0] = 'T' ;
-          else
-           PSW[0] = 'F' ;
-         printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("***********************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 26. Compare Greater Register Addressing\n") ;
+        PrintIR(IR) ;
+        PREG = ParseOp1Reg(IR) ;
+        VAL  = FetchData(PRegs[PREG]) ;
+	 	printf("Pointer Register = P%d. Memory at Location %d is: \n", PREG, PRegs[PREG]);
+	 	PrintLocation(PRegs[PREG]) ;
+	 	printf("Comparing ACC = %d > %d\n", ACC, VAL) ;
+        if (ACC > VAL)
+        	PSW[0] = 'T' ;
+        else
+        	PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+		printf("***********************************************************\n\n") ;
+    }
 
 	void OP27(char *IR)
-        {int PREG, VAL ;
-         printf("Opcode = 27. Compare Greater Immediate\n") ;
-         PrintIR(IR) ;
-         VAL  = ParseOP1andOP2Imm(IR) ;
-         if (ACC > VAL)
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("************************************************\n\n") ;
-        }
+    {
+		int PREG, VAL ;
+        printf("Opcode = 27. Compare Greater Immediate\n") ;
+        PrintIR(IR) ;
+        VAL  = ParseOP1andOP2Imm(IR) ;
+        if (ACC > VAL)
+            PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+		printf("************************************************\n\n") ;
+    }
 
 	void OP28(char *IR)
-        {
-          int PREG, VAL ;
-          printf("Opcode = 28. Compare Equal Immediate\n") ;
-          PrintIR(IR) ;
+    {
+        int PREG, VAL ;
+        printf("Opcode = 28. Compare Equal Immediate\n") ;
+        PrintIR(IR) ;
 
-          VAL  = ParseOP1andOP2Imm(IR) ;
-          if (ACC == VAL)
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("**********************************************\n\n") ;
-        }
+        VAL  = ParseOP1andOP2Imm(IR) ;
+        if (ACC == VAL)
+            PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+	 	printf("**********************************************\n\n") ;
+    }
 
 	 void OP29(char *IR)
-        {
-          int PREG, VAL ;
-          printf("Opcode = 29. Compare Less Immediate\n") ;
-          PrintIR(IR) ;
+    {
+    	int PREG, VAL ;
+        printf("Opcode = 29. Compare Less Immediate\n") ;
+        PrintIR(IR) ;
 
-          VAL  = ParseOP1andOP2Imm(IR) ;
-          if (ACC < VAL)
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("***********************************************\n\n") ;
-        }
+    	VAL  = ParseOP1andOP2Imm(IR) ;
+        if (ACC < VAL)
+        	PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+	 	printf("***********************************************\n\n") ;
+    }
 
 	void OP30(char *IR)
-        {
-          int RREG, VAL ;
-          printf("Opcode = 30. Compare Register Equal\n") ;
-          PrintIR(IR) ;
-	  RREG = ParseOp1Reg(IR) ;
+    {
+        int RREG, VAL ;
+        printf("Opcode = 30. Compare Register Equal\n") ;
+        PrintIR(IR) ;
+	  	RREG = ParseOp1Reg(IR) ;
 
-	  
-          if (ACC == RRegs[RREG])
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("***********************************************\n\n") ;
-        }
+        if (ACC == RRegs[RREG])
+            PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+		printf("***********************************************\n\n") ;
+    }
 
 	void OP31(char *IR)
-        {
-          int RREG, VAL ;
-          printf("Opcode = 31. Compare Register Less\n") ;
-          PrintIR(IR) ;
-          RREG = ParseOp1Reg(IR) ;
-
-          
-          if (ACC < RRegs[RREG])
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("*********************************************\n\n") ;
-        }
+    {
+        int RREG, VAL ;
+        printf("Opcode = 31. Compare Register Less\n") ;
+        PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
+  
+        if (ACC < RRegs[RREG])
+            PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+	 	printf("*********************************************\n\n") ;
+    }
 
 	void OP32(char *IR)
-        {
-          int RREG, VAL ;
-          printf("Opcode = 32. Compare Register Greater\n") ;
-          PrintIR(IR) ;
-          RREG = ParseOp1Reg(IR) ;
+    {
+        int RREG, VAL ;
+        printf("Opcode = 32. Compare Register Greater\n") ;
+        PrintIR(IR) ;
+        RREG = ParseOp1Reg(IR) ;
 
-
-          if (ACC > RRegs[RREG])
-                PSW[0] = 'T' ;
-          else
-                PSW[0] = 'F' ;
-          printf("PSW[0] set to %c\n", PSW[0]) ;
-	 printf("*********************************************\n\n") ;
-        }
+        if (ACC > RRegs[RREG])
+            PSW[0] = 'T' ;
+        else
+            PSW[0] = 'F' ;
+        printf("PSW[0] set to %c\n", PSW[0]) ;
+	 	printf("*********************************************\n\n") ;
+    }
 
 	void OP33(char *IR, short int *PC)
-	{printf("Branch Conditional True\n") ;
-	 if (PSW[0] == 'T')
-		*PC = ParseOp1(IR) ;
-	 else
-		*PC = ++(*PC) ;
-	printf("New PC is %d\n", *PC) ;
-	 printf("********************************************\n\n") ;
+	{
+		printf("Branch Conditional True\n") ;
+		if (PSW[0] == 'T')
+			*PC = ParseOp1(IR) ;
+		else
+			*PC = ++(*PC) ;
+		printf("New PC is %d\n", *PC) ;
+	 	printf("********************************************\n\n") ;
 	}
 	 
 	void OP34(char *IR, short int *PC)
-        {printf("Branch Conditional False\n") ;
-         if (PSW[0] == 'F')
-                *PC = ParseOp1(IR) ;
+    {
+		printf("Branch Conditional False\n") ;
+        if (PSW[0] == 'F')
+        	*PC = ParseOp1(IR) ;
         else
-                *PC = ++(*PC) ;
-	printf("New PC is %d\n", (*PC)) ;
-	 printf("******************************************\n\n") ;
-        }
+            *PC = ++(*PC) ;
+		printf("New PC is %d\n", (*PC)) ;
+		printf("******************************************\n\n") ;
+    }
 
 	void OP35(char *IR, short int *PC)
-        {printf("Branch Unconditional \n") ;
+    {
+		printf("Branch Unconditional \n") ;
         *PC = ParseOp1(IR) ;
         printf("New PC is %d\n", *PC) ;
-	 printf("*****************************************\n\n") ;
-        }
+	 	printf("*****************************************\n\n") ;
+    }
