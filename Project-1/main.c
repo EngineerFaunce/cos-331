@@ -158,7 +158,6 @@ struct PCB *GetNextProcess(struct PCB **RQ) {
         tmp->Next_PCB = NULL;
         return tmp;
 }
-       
 
 /*	Deletes the PCB (using free) */
 void DeletePCB(struct PCB *Current) {
@@ -183,7 +182,6 @@ void PrintQ(struct PCB *Head) {
                 Head = Head->Next_PCB;
         }
 }
-
 
 /*	This function restores the state of the process that is set to begin its
 	execution
