@@ -35,13 +35,13 @@ int ExecuteProc(struct PCB *Current)
 	      	case 1:    OP1(IR) ; PC++ ; Current->IC--; break ;
 			case 2:    OP2(IR) ; PC++ ; Current->IC--; break ; 
 			case 3:    OP3(IR) ; PC++ ; Current->IC--; break ; 
-			case 4:    OP4(IR) ; PC++ ; Current->IC--; break ; 
+			case 4:    OP4(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
 			case 5:    OP5(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 6:    OP6(IR) ; PC++ ; Current->IC--; break ; 
+			case 6:    OP6(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
 			case 7:    OP7(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 8:    OP8(IR) ; PC++ ; Current->IC--; break ; 
+			case 8:    OP8(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
 			case 9:    OP9(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 10:   OP10(IR) ; PC++ ; Current->IC--; break ; 
+			case 10:   OP10(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
 			case 11:   OP11(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
 			case 12:   OP12(IR) ; PC++ ; Current->IC--; break ; 
 			case 13:   OP13(IR) ; PC++ ; Current->IC--; break ; 
@@ -102,8 +102,8 @@ int ExecuteProc(struct PCB *Current)
 	//returns the integer value of operands 1 and 2 combined to form a 4-byte integer.
 	int ParseOP1andOP2Imm(char *IR) 
 	{
-		int VAL = (int) (IR[2] - 48) * 1000 + (int) (IR[3] - 48) * 100
-			+ (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
+		int VAL = (int) (IR[2] - 48) * 1000 + (int) (IR[3] - 48) * 100 
+		+ (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
 		return(VAL) ;
 	}
 
@@ -262,8 +262,8 @@ int ExecuteProc(struct PCB *Current)
 		printf("Opcode 4: Load ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
-		Address = PRegs[PREG]; 
-		Value = FetchData(Address+Base) ;
+		Address = PRegs[PREG] + Base ; 
+		Value = FetchData(Address) ;
 		ACC = Value ;
 		PrintRegs() ;
 		printf("************************************************\n\n") ;
@@ -276,8 +276,8 @@ int ExecuteProc(struct PCB *Current)
 		printf("Opcode 5: Load ACC Direct Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1(IR) ;
-		Address = PRegs[PREG] ;
-		Value = FetchData(Address+Base) ;
+		Address = PRegs[PREG] + Base ;
+		Value = FetchData(Address) ;
 		ACC = Value ;
 		PrintRegs() ;
 		printf("**********************************************\n\n") ;
@@ -290,10 +290,10 @@ int ExecuteProc(struct PCB *Current)
         printf("Opcode 6: Store ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
-		Address = PRegs[PREG] ;
-		StoreData(Address+Base, ACC) ;
+		Address = PRegs[PREG] + Base ;
+		StoreData(Address, ACC) ;
 		PrintRegs() ;
-		PrintLocation(Address+Base) ;
+		PrintLocation(Address) ;
 		printf("********************************************\n\n") ;
     }
 
@@ -303,24 +303,24 @@ int ExecuteProc(struct PCB *Current)
 		int PREG, Value, Address ;
         printf("Opcode 7: Store ACC Direct Addressing\n") ;
 		PrintIR(IR) ;
-		Address = ParseOP1andOP2Imm(IR) ;
-		StoreData(Address+Base, ACC) ;
-		PrintLocation(Address+Base) ;
+		Address = ParseOP1andOP2Imm(IR) + Base ;
+		StoreData(Address, ACC) ;
+		PrintLocation(Address) ;
 		printf("*********************************************\n\n") ;
     }
 
 	// modify
-	void OP8(char *IR)
+	void OP8(char *IR, int Base)
     {
 		int PREG, RREG, Value, Address ;
         printf("Opcode 8: Store Register to Memory:  Register Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
     	PREG = ParseOp2Reg(IR) ;
-        Address = PRegs[PREG] ;
+        Address = PRegs[PREG] + Base ;
 	 	Value = RRegs[RREG] ;
-        StoreData(Address+Base, Value) ;
-	 	PrintLocation(Address+Base) ;
+        StoreData(Address, Value) ;
+	 	PrintLocation(Address) ;
 	 	printf("***********************************************\n\n") ;
     }
 
@@ -331,23 +331,23 @@ int ExecuteProc(struct PCB *Current)
         printf("Opcode 9: Store Register to Memory: Direct Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
-        Address = ParseOp2(IR) ;
-        printf("Storing Reg %d Value %d to Memory Address %d\n",RREG,RRegs[RREG],Address+Base) ;
-        StoreData(Address+Base, RRegs[RREG]) ;
-	 	PrintLocation(Address+Base) ;
+        Address = ParseOp2(IR) + Base ;
+        printf("Storing Reg %d Value %d to Memory Address %d\n",RREG,RRegs[RREG],Address) ;
+        StoreData(Address, RRegs[RREG]) ;
+	 	PrintLocation(Address) ;
 	 	printf("**********************************************\n\n") ;
     }
 
 	// modify
-	void OP10(char *IR)
+	void OP10(char *IR, int Base)
 	{
 		int RREG, PREG, Value, Address ;
         printf("Opcode 10: Load Register From Memory: Register Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
         PREG = ParseOp2Reg(IR) ;
-	 	Address = PRegs[PREG] ;
-        Value = FetchData(Address+Base) ;
+	 	Address = PRegs[PREG] + Base ;
+        Value = FetchData(Address) ;
 	 	RRegs[RREG] = Value ;
 	 	PrintRegs() ;
 	 	printf("************************************************\n\n") ;
@@ -360,8 +360,8 @@ int ExecuteProc(struct PCB *Current)
         printf("Opcode 11: Load Register From Memory: Direct Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
-        Address = ParseOp2(IR) ;
-        Value = FetchData(Address+Base) ;
+        Address = ParseOp2(IR) + Base ;
+        Value = FetchData(Address) ;
         RRegs[RREG] = Value ;
 	 	PrintRegs() ;
 	 	printf("*****************************************************\n\n") ;
@@ -485,8 +485,8 @@ int ExecuteProc(struct PCB *Current)
 		int Address, PREG, VAL ;
         printf("Opcode = 21. Add to Accumulator Direct Addressing\n")  ; 
         PrintIR(IR) ;
-        Address = ParseOp1(IR) ;
-        VAL  = FetchData(Address+Base) ;
+        Address = ParseOp1(IR) + Base;
+        VAL  = FetchData(Address) ;
         ACC  += VAL ;
         PrintRegs() ;
 	 	printf("*******************************************************\n\n") ;
@@ -510,8 +510,8 @@ int ExecuteProc(struct PCB *Current)
 		int Address, PREG, VAL ;
         printf("Opcode = 23. Subtract From Accumulator Direct Addressing\n")  ;
         PrintIR(IR) ;
-        Address = ParseOp1(IR) ;
-    	VAL  = FetchData(Address+Base) ;
+        Address = ParseOp1(IR) + Base;
+    	VAL  = FetchData(Address) ;
         ACC  -= VAL ;
         PrintRegs() ;
 	 	printf("*******************************************************\n\n") ;
