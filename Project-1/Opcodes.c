@@ -35,14 +35,14 @@ int ExecuteProc(struct PCB *Current)
 	      	case 1:    OP1(IR) ; PC++ ; Current->IC--; break ;
 			case 2:    OP2(IR) ; PC++ ; Current->IC--; break ; 
 			case 3:    OP3(IR) ; PC++ ; Current->IC--; break ; 
-			case 4:    OP4(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 5:    OP5(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 6:    OP6(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 7:    OP7(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 8:    OP8(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 9:    OP9(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 10:   OP10(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
-			case 11:   OP11(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
+			case 4:    OP4(IR) ; PC++ ; Current->IC--; break ; 
+			case 5:    OP5(IR) ; PC++ ; Current->IC--; break ; 
+			case 6:    OP6(IR) ; PC++ ; Current->IC--; break ; 
+			case 7:    OP7(IR) ; PC++ ; Current->IC--; break ; 
+			case 8:    OP8(IR) ; PC++ ; Current->IC--; break ; 
+			case 9:    OP9(IR) ; PC++ ; Current->IC--; break ; 
+			case 10:   OP10(IR) ; PC++ ; Current->IC--; break ; 
+			case 11:   OP11(IR) ; PC++ ; Current->IC--; break ; 
 			case 12:   OP12(IR) ; PC++ ; Current->IC--; break ; 
 			case 13:   OP13(IR) ; PC++ ; Current->IC--; break ; 
 			case 14:   OP14(IR) ; PC++ ; Current->IC--; break ; 
@@ -52,9 +52,9 @@ int ExecuteProc(struct PCB *Current)
 			case 18:   OP18(IR) ; PC++ ; Current->IC--; break ; 
 			case 19:   OP19(IR) ; PC++ ; Current->IC--; break ; 
 			case 20:   OP20(IR) ; PC++ ; Current->IC--; break ; 
-			case 21:   OP21(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
+			case 21:   OP21(IR) ; PC++ ; Current->IC--; break ; 
 			case 22:   OP22(IR) ; PC++ ; Current->IC--; break ; 
-			case 23:   OP23(IR, Current->BaseReg) ; PC++ ; Current->IC--; break ; 
+			case 23:   OP23(IR) ; PC++ ; Current->IC--; break ; 
 			case 24:   OP24(IR) ; PC++ ; Current->IC--; break ; 
 			case 25:   OP25(IR) ; PC++ ; Current->IC--; break ; 
 			case 26:   OP26(IR) ; PC++ ; Current->IC--; break ; 
@@ -255,42 +255,43 @@ int ExecuteProc(struct PCB *Current)
 		printf("************************************************\n\n") ;
 	}
     
-	// modify
-	void OP4(char *IR, int Base)
+	// modified
+	void OP4(char *IR)
 	{
 		int PREG, Value, Address ;
 		printf("Opcode 4: Load ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
-		Address = PRegs[PREG] + Base ; 
+		Address = PRegs[PREG] + Current->BaseReg ; 
 		Value = FetchData(Address) ;
 		ACC = Value ;
 		PrintRegs() ;
+		PrintLocation(Address) ;		// used for debugging, remove once project complete
 		printf("************************************************\n\n") ;
 	}
 
 	// modified
-	void OP5(char *IR, int Base)
+	void OP5(char *IR)
 	{
 		int PREG, Value, Address ;
 		printf("Opcode 5: Load ACC Direct Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1(IR) ;
-		Address = PRegs[PREG] + Base ;
+		Address = PRegs[PREG] + Current->BaseReg ;
 		Value = FetchData(Address) ;
 		ACC = Value ;
 		PrintRegs() ;
 		printf("**********************************************\n\n") ;
     }
 
-	// modify
-	void OP6(char *IR, int Base)
+	// modified
+	void OP6(char *IR)
     {
 		int PREG, Value, Address ;
         printf("Opcode 6: Store ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
-		Address = PRegs[PREG] + Base ;
+		Address = PRegs[PREG] + Current->BaseReg ;
 		StoreData(Address, ACC) ;
 		PrintRegs() ;
 		PrintLocation(Address) ;
@@ -303,21 +304,21 @@ int ExecuteProc(struct PCB *Current)
 		int PREG, Value, Address ;
         printf("Opcode 7: Store ACC Direct Addressing\n") ;
 		PrintIR(IR) ;
-		Address = ParseOP1andOP2Imm(IR) + Base ;
+		Address = ParseOP1andOP2Imm(IR) + Current->BaseReg ;
 		StoreData(Address, ACC) ;
 		PrintLocation(Address) ;
 		printf("*********************************************\n\n") ;
     }
 
-	// modify
-	void OP8(char *IR, int Base)
+	// modified
+	void OP8(char *IR)
     {
 		int PREG, RREG, Value, Address ;
         printf("Opcode 8: Store Register to Memory:  Register Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
     	PREG = ParseOp2Reg(IR) ;
-        Address = PRegs[PREG] + Base ;
+        Address = PRegs[PREG] + Current->BaseReg ;
 	 	Value = RRegs[RREG] ;
         StoreData(Address, Value) ;
 	 	PrintLocation(Address) ;
@@ -325,28 +326,28 @@ int ExecuteProc(struct PCB *Current)
     }
 
 	// modified
-	void OP9(char *IR, int Base)
+	void OP9(char *IR)
     {
 		int RREG, Value, Address ;
         printf("Opcode 9: Store Register to Memory: Direct Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
-        Address = ParseOp2(IR) + Base ;
+        Address = ParseOp2(IR) + Current->BaseReg ;
         printf("Storing Reg %d Value %d to Memory Address %d\n",RREG,RRegs[RREG],Address) ;
         StoreData(Address, RRegs[RREG]) ;
 	 	PrintLocation(Address) ;
 	 	printf("**********************************************\n\n") ;
     }
 
-	// modify
-	void OP10(char *IR, int Base)
+	// modified
+	void OP10(char *IR)
 	{
 		int RREG, PREG, Value, Address ;
         printf("Opcode 10: Load Register From Memory: Register Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
         PREG = ParseOp2Reg(IR) ;
-	 	Address = PRegs[PREG] + Base ;
+	 	Address = PRegs[PREG] + Current->BaseReg ;
         Value = FetchData(Address) ;
 	 	RRegs[RREG] = Value ;
 	 	PrintRegs() ;
@@ -354,13 +355,13 @@ int ExecuteProc(struct PCB *Current)
     }
 
 	// modified
-	void OP11(char *IR, int Base)
+	void OP11(char *IR)
     {
 		int RREG, PREG, Value, Address ;
         printf("Opcode 11: Load Register From Memory: Direct Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
-        Address = ParseOp2(IR) + Base ;
+        Address = ParseOp2(IR) + Current->BaseReg ;
         Value = FetchData(Address) ;
         RRegs[RREG] = Value ;
 	 	PrintRegs() ;
@@ -467,50 +468,53 @@ int ExecuteProc(struct PCB *Current)
 		printf("*****************************************************\n\n") ;
     }
 
+	// modified
 	void OP20(char *IR)
     {
 		int PREG, VAL ;
         printf("Opcode = 20. Add to Accumulator Register Addressing\n")  ;
         PrintIR(IR) ;
         PREG = ParseOp1Reg(IR) ;
-	 	VAL  = FetchData(PRegs[PREG]) ;
+	 	VAL  = FetchData(PRegs[PREG] + Current->BaseReg) ;
         ACC  += VAL ;
+		
         PrintRegs() ;
 	 	printf("**********************************************************\n\n") ;
     }
 
 	// modified
-	void OP21(char *IR, int Base)
+	void OP21(char *IR)
     {
 		int Address, PREG, VAL ;
         printf("Opcode = 21. Add to Accumulator Direct Addressing\n")  ; 
         PrintIR(IR) ;
-        Address = ParseOp1(IR) + Base;
+        Address = ParseOp1(IR) + Current->BaseReg;
         VAL  = FetchData(Address) ;
         ACC  += VAL ;
         PrintRegs() ;
 	 	printf("*******************************************************\n\n") ;
 	}
 
+	// modified
 	void OP22(char *IR)
     {
 		int PREG, VAL ;
         printf("Opcode = 22. Subtract From Accumulator Register Addressing\n")  ; 
         PrintIR(IR) ;
         PREG = ParseOp1Reg(IR) ;
-        VAL  = FetchData(PRegs[PREG]) ;
+        VAL  = FetchData(PRegs[PREG] + Current->BaseReg) ;
         ACC  -= VAL ;
         PrintRegs() ;
 	 	printf("********************************************************\n\n") ;
     }
 
 	// modified
-	void OP23(char *IR, int Base)
+	void OP23(char *IR)
     {
 		int Address, PREG, VAL ;
         printf("Opcode = 23. Subtract From Accumulator Direct Addressing\n")  ;
         PrintIR(IR) ;
-        Address = ParseOp1(IR) + Base;
+        Address = ParseOp1(IR) + Current->BaseReg;
     	VAL  = FetchData(Address) ;
         ACC  -= VAL ;
         PrintRegs() ;
