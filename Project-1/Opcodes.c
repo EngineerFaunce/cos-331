@@ -246,7 +246,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP3(char *IR)
     {
-		int PREG, VAL ;
+		//int PREG ;
+		int VAL ;
         printf("Opcode = 3. Load Accumulator Immediate\n");
         PrintIR(IR) ;
         VAL = ParseOP1andOP2Imm(IR) ;
@@ -287,7 +288,8 @@ int ExecuteProc(struct PCB *Current)
 	// modified
 	void OP6(char *IR)
     {
-		int PREG, Value, Address ;
+		int PREG, Address ;
+		//int Value ;
         printf("Opcode 6: Store ACC Register Addressing\n") ;
 		PrintIR(IR) ;
 		PREG = ParseOp1Reg(IR) ;
@@ -301,7 +303,8 @@ int ExecuteProc(struct PCB *Current)
 	// modified
 	void OP7(char *IR)
 	{
-		int PREG, Value, Address ;
+		int PREG, Address ;
+		//int Value ;
         printf("Opcode 7: Store ACC Direct Addressing\n") ;
 		PrintIR(IR) ;
 		Address = ParseOP1andOP2Imm(IR) + Current->BaseReg ;
@@ -328,7 +331,8 @@ int ExecuteProc(struct PCB *Current)
 	// modified
 	void OP9(char *IR)
     {
-		int RREG, Value, Address ;
+		int RREG, Address ;
+		//int Value ;
         printf("Opcode 9: Store Register to Memory: Direct Addressing\n") ;
 	 	PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -370,7 +374,8 @@ int ExecuteProc(struct PCB *Current)
 	
 	void OP12(char *IR)
     {
-		int RREG, VAL ;
+		//int RREG ;
+		int VAL ;
         printf("Opcode = 12. Load Register R0 Immediate\n");
 	 	PrintIR(IR) ;
         PrintIR(IR) ;
@@ -381,10 +386,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("******************************************************\n\n") ;
     }
 
-	/* I think I can delete int Value and Address here
-	 * so if after compiling and it breaks, come back
-	 * and fix this future me
-	 */
 	void OP13(char *IR)
     {
 		int RREG, PREG ;
@@ -400,8 +401,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP14(char *IR)      
     {
-		int RREG, PREG ;
-		// int Value, Address ;
+		int RREG ;
+		// int PREG, Value, Address ;
         printf("Opcode 14: Load Accumulator From Register\n") ;
 		PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -412,8 +413,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP15(char *IR)
     {
-		int RREG, PREG ;
-		// int Value, Address ;
+		int RREG ;
+		// int PREG, Value, Address ;
         printf("Opcode 15: Load Register From Accumulator \n") ;
 		PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -425,7 +426,8 @@ int ExecuteProc(struct PCB *Current)
 	
 	void OP16(char *IR)
     {
-		int PREG, VAL ;
+		int VAL ;
+		//int PREG ;
         printf("Opcode = 16. Add Accumulator Immediate\n");
         PrintIR(IR) ;
         VAL = ParseOP1andOP2Imm(IR) ;
@@ -437,7 +439,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP17(char *IR)
     {
-		int PREG, VAL ;
+		int VAL ;
+		//int PREG ;
         printf("Opcode = 17. Substract Accumulator Immediate\n");
         PrintIR(IR) ;
         VAL = ParseOP1andOP2Imm(IR) ;
@@ -448,7 +451,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP18(char *IR)
     {
-		int RREG, VAL ;
+		int RREG ;
+		//int VAL ;
     	printf("Opcode = 18. Add contents of Register to  Accumulator \n");
         PrintIR(IR) ;
 		RREG = ParseOp1Reg(IR) ;
@@ -459,7 +463,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP19(char *IR)
     {
-		int RREG, VAL ;
+		int RREG ;
+		//int VAL ;
         printf("Opcode = 19. Subtract contents of Register From  Accumulator \n");
         PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -485,7 +490,8 @@ int ExecuteProc(struct PCB *Current)
 	// modified
 	void OP21(char *IR)
     {
-		int Address, PREG, VAL ;
+		int Address, VAL ;
+		//int PREG ;
         printf("Opcode = 21. Add to Accumulator Direct Addressing\n")  ; 
         PrintIR(IR) ;
         Address = ParseOp1(IR) + Current->BaseReg;
@@ -511,7 +517,8 @@ int ExecuteProc(struct PCB *Current)
 	// modified
 	void OP23(char *IR)
     {
-		int Address, PREG, VAL ;
+		int Address, VAL ;
+		//int PREG ;
         printf("Opcode = 23. Subtract From Accumulator Direct Addressing\n")  ;
         PrintIR(IR) ;
         Address = ParseOp1(IR) + Current->BaseReg;
@@ -571,7 +578,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP27(char *IR)
     {
-		int PREG, VAL ;
+		int VAL ;
+		//int PREG ;
         printf("Opcode = 27. Compare Greater Immediate\n") ;
         PrintIR(IR) ;
         VAL  = ParseOP1andOP2Imm(IR) ;
@@ -585,7 +593,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP28(char *IR)
     {
-        int PREG, VAL ;
+        int VAL ;
+		//int PREG ;
         printf("Opcode = 28. Compare Equal Immediate\n") ;
         PrintIR(IR) ;
 
@@ -600,7 +609,8 @@ int ExecuteProc(struct PCB *Current)
 
 	 void OP29(char *IR)
     {
-    	int PREG, VAL ;
+    	int VAL ;
+		//int PREG ;
         printf("Opcode = 29. Compare Less Immediate\n") ;
         PrintIR(IR) ;
 
@@ -615,7 +625,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP30(char *IR)
     {
-        int RREG, VAL ;
+        int RREG ;
+		//int VAL ;
         printf("Opcode = 30. Compare Register Equal\n") ;
         PrintIR(IR) ;
 	  	RREG = ParseOp1Reg(IR) ;
@@ -630,7 +641,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP31(char *IR)
     {
-        int RREG, VAL ;
+        int RREG ;
+		//int VAL ;
         printf("Opcode = 31. Compare Register Less\n") ;
         PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
@@ -645,7 +657,8 @@ int ExecuteProc(struct PCB *Current)
 
 	void OP32(char *IR)
     {
-        int RREG, VAL ;
+        int RREG ;
+		//int VAL ;
         printf("Opcode = 32. Compare Register Greater\n") ;
         PrintIR(IR) ;
         RREG = ParseOp1Reg(IR) ;
