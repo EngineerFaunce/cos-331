@@ -197,14 +197,27 @@ int ExecuteProc(struct PCB *Current)
         for (i = 0; i < upto ; i++)
         {
 			printf("Memory[%d]: ", i) ;
-                for(j = 0; j < 6 ; j++)
-                  printf("%c ", memory[i][j]) ;
+			for(j = 0; j < 6 ; j++)
+				printf("%c ", memory[i][j]) ;
             printf("\n") ;
         }
     }
 
+	/* Prints out all memory locations from base to limit */
+	void printMemRange()
+	{
+		int i = Current->BaseReg ;
+		for(i; i < Current->LimitReg; i++)
+		{
+				printf("Memory[%d]: ", i) ;
+				for(j = 0; j < 6 ; j++)
+						printf("%c ", memory[i][j]) ;
+            	printf("\n") ;
+		}
+	}
 
-	/*Simulate Execution of Opcodes*/
+
+	/* Simulate Execution of Opcodes */
 	void OP0(char *IR)
 	{
 		int PREG, VAL ;
