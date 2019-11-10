@@ -20,7 +20,6 @@ struct PCB
   int ACC ;
   int BaseReg, LimitReg ;
   /* Note: You cannot store the process' memory in PCB */
-  // EA = PC + BAR
 } ;
 
 struct PCB *RQ, *tmp, *RQT, *Current ;
