@@ -138,11 +138,11 @@ int ExecuteProc(struct PCB *Current)
 		return(VAL) ;
 	}
 
-	//Prints out the contents of the IR on the same line.
-
+	// Prints out the contents of the IR on the same line.
 	void PrintIR(char *IR) 
 	{ printf("IR: %s\n", IR) ; }
 
+	// Prints out the contents of a location in memory
 	void PrintLocation(int Address)
 	{
 		int i ;
@@ -182,7 +182,7 @@ int ExecuteProc(struct PCB *Current)
        		memory[Memory_Location][i] = temp[i];
 	}
 
-	/*Prints out the value of the Program Reisters*/
+	/* Prints out the value of the Program Reisters */
 	void PrintRegs()
 	{
 		int i, j ;
@@ -193,7 +193,7 @@ int ExecuteProc(struct PCB *Current)
 		printf("PC is %d\n", PC) ;
 	}
 
-	/*Prints out all memory locations used in program*/	
+	/* Prints out all memory locations used in program */	
 	void printMEM(int upto)
     {
 		int i;
