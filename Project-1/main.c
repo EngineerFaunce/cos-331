@@ -9,6 +9,7 @@
 #include "Vars.h"
 
 extern void printMEM(int) ;
+extern void printMemRange() ;
 void Create_PCBs() ;
 void LoadPrograms() ;
 void LoadProgram(int, struct PCB **) ;
@@ -53,8 +54,12 @@ int main(int argc, char *argv[])
                 int Completed = ExecuteProc(Current) ;
                 if (Completed)
                 {
+                        printf("\nProcess %d has completed its execution.\n", Current->PID) ;
+	                printf("Printing out memory locations utilized by process.\n") ;
+                        printMemRange();
                         printf("Removing PID %d\n", Current->PID) ;
                         DeletePCB(Current) ;
+                        //sleep(2);      // used for demo
                 }
                 else
                 {
@@ -67,7 +72,7 @@ int main(int argc, char *argv[])
                 }
 
                 PrintQ(RQ) ;
-                //sleep(1) ;
+                //sleep(2) ;    // used for demo
                 if (RQ == NULL)
                         break ;
         }
