@@ -7,7 +7,7 @@ int i, j ;
 int ExecuteProc(struct PCB *Current)
 {
 	int Done = 0 ;
-	PC = Current->PC;	//program counter, always starts at 0
+	PC = Current->PC;	// program counter, always starts at 0
 
 	/* This is implementing the Instruction Cycle */
 	/* First, fetch instruction */
@@ -18,9 +18,9 @@ int ExecuteProc(struct PCB *Current)
 			return(0);
 
 		for (i = 0; i < 6 ; i++)
-			IR[i] = memory[PC][i] ; //instruction fetch
+			IR[i] = memory[PC][i] ; // instruction fetch
 
-	    /*Second, Decode instruction*/
+	    /* Second, Decode instruction */
 
 	    opcode = ((int) (IR[0])- 48) * 10 ;
 	    opcode += ((int) (IR[1])- 48) ;
@@ -28,7 +28,7 @@ int ExecuteProc(struct PCB *Current)
 	    /* Provide user information about Program Execution */
 	    printf("*********************************************************") ;
 	    printf("\nIn Program Execution Loop: New PC is %d OPCODE IS %d\n\n", PC, opcode) ;
-	    /*Now execute instruction and increment PC (unless Branch) */
+	    /* Now execute instruction and increment PC (unless Branch) */
         switch(opcode) 
 	    {
 			case 0:    OP0(IR) ; PC++ ; Current->IC--; break ;
@@ -74,17 +74,17 @@ int ExecuteProc(struct PCB *Current)
 
 
 	}
+	/* Returns a 1 if process has completed execution */
 	return(1) ;
 }
 
-	/*These are some helper functions that do most of the 
-	  in terms of parsing to obtain operands and to perform
-	  memory access operations.
+	/*	These are some helper functions that do most of the 
+		in terms of parsing to obtain operands and to perform
+		memory access operations.
 	*/
 
-	//This function returns the integer value of operand 1 
-	//when this operand is an immediate two-byte integer. 
-	
+	// This function returns the integer value of operand 1 
+	// when this operand is an immediate two-byte integer. 
 	int ParseOp1 (char *IR) 
 	{
 		int VAL = (int) (IR[2] - 48) * 10 + (int) (IR[3] - 48) ;
@@ -92,21 +92,19 @@ int ExecuteProc(struct PCB *Current)
 	}
 	     
 	// returns the integer value of operand 2 when this operand is a two-byte integer. 
-
 	int ParseOp2 (char *IR) 
 	{
 		int VAL = (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
         return (VAL) ;
 	}
 
-	//returns the integer value of operands 1 and 2 combined to form a 4-byte integer.
+	// returns the integer value of operands 1 and 2 combined to form a 4-byte integer.
 	int ParseOP1andOP2Imm(char *IR) 
 	{
 		int VAL = (int) (IR[2] - 48) * 1000 + (int) (IR[3] - 48) * 100 
 		+ (int) (IR[4] - 48) * 10 + (int) (IR[5] - 48) ;
 		return(VAL) ;
 	}
-
 
 	// returns the register number of the register used as operand  1 of an instruction. 
 	// Can be either Pointer or General-Purpose register. 
@@ -116,7 +114,6 @@ int ExecuteProc(struct PCB *Current)
 	 	VAL = (int) (IR[3] - 48) ;	
 	 	return(VAL) ;
     }
-
 
 	// returns the register number of a register used as operand  2 of an instruction. 
 	// Can be either a Pointer or General-Purpose register. 
@@ -152,8 +149,8 @@ int ExecuteProc(struct PCB *Current)
 		printf("\n") ;
 	}
 
-	/*Converts Value from an int to a character string and stores 
-	it in memory[Memory_Location]
+	/*	Converts Value from an int to a character string and stores 
+		it in memory[Memory_Location]
 	*/
 	void StoreData(int Memory_Location, int Value)
 	{
