@@ -3,6 +3,7 @@
 *.o
 Project1
 
-# Text files #
+# Misc. files #
 ##################
 *.txt
+*.zip
