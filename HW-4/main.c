@@ -4,7 +4,7 @@
 void sleep(int) ;
 
 struct PCB
-  { struct PCB *Next_PCB ; 
+{   struct PCB *Next_PCB ; 
     int PID ;
     int IC ;
 } ;
@@ -36,6 +36,7 @@ int main()
   Create_PCBs() ; 
   while(1) { 
     Current = GetNextProcess(&RQ) ; //select next process to execute and update RQ
+    printf("\n********************\n");
     printf("Current Process is %d\n",Current->PID) ;
     int j = rand() % 4 ; //you will want to play with this!
     if (j < 3 ) {
