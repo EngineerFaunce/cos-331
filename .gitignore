@@ -1,9 +1,18 @@
+# Fancy stuff #
+###############
+# * - ignores all files
+# !/**/ - unignores directories
+# !*.* - unignores files with an extension
+*
+!/**/
+!*.*
+!Makefile
+
 # Compiled source #
 ###################
 *.o
-Project1
 
 # Misc. files #
-##################
+###############
 *.txt
 *.zip
