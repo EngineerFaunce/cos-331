@@ -73,13 +73,22 @@ int main()
 int Wait(struct Semaphore *Sem, struct PCB *Current)
 {
   struct PCB *tmp ;
-  printf("In Wait with  PID %d  Sem.Count = %d\n", Current->PID, Sem->count) ;
+  printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sem->count) ;
+  /* Steps to complete:
+   * Decrement semaphore count.
+   * If count is less than 0, place PCB on SemQ by using GetNextProcess and return 1.
+   * Else, return a 0.
+   */
 }
 
 void Signal(struct Semaphore *Goo)
 {
   struct PCB *tmp, *tmp1 ;
   printf("In Signal. Count is %d\n", Goo->count) ;
+  /* Steps to complete:
+   * Increment semaphore count.
+   * If count is less than OR equal to 0, remove PCB from SemQ and place on the RQ.
+   */
 }
 
 void Create_PCBs()
