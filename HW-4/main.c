@@ -36,18 +36,18 @@ int main()
   Create_PCBs() ; 
   while(1) { 
     Current = GetNextProcess(&RQ) ; //select next process to execute and update RQ
-    printf("Current Proc is %d\n",Current->PID) ;
+    printf("Current Process is %d\n",Current->PID) ;
     int j = rand() % 4 ; //you will want to play with this!
     if (j < 3 ) {
-      printf("CALLING WAIT with PID %d\n", Current->PID) ;
+      printf("Calling WAIT with PID %d\n", Current->PID) ;
       blocked = Wait(&Sem, Current) ;
       if (blocked)
-      printf("Process Got blocked on wait Q. Bummer!\n") ;
+        printf("Process was blocked on wait Q.\n") ;
       else
-      printf("Process NOT blocked on wait Q. Yabadabadoo!!!\n") ;
+        printf("Process NOT blocked on wait Q.\n") ;
     }
     else {
-      printf("CAlling Signal with PID %d\n", Current->PID) ;
+      printf("Calling SIGNAL with PID %d\n", Current->PID) ;
       Signal(&Sem) ;	  
       blocked = 0 ;
     }
