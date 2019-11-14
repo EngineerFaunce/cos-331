@@ -64,32 +64,61 @@ int main()
     printf("Calling PrintQ for the SemaphoreQ\n") ;
     PrintQ(Sem.SemQ) ;
           
-    sleep(4) ; //Marvel at what you have accomplished!! Can remove once it works.
+    //sleep(4) ; //Marvel at what you have accomplished!! Can remove once it works.
           
     if (RQ == NULL)
       break ;
   }
 }
 
-int Wait(struct Semaphore *Sem, struct PCB *Current)
+int Wait(struct Semaphore *Sema, struct PCB *Current)
 {
+  Sema->count--;
   struct PCB *tmp ;
-  printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sem->count) ;
-  /* Steps to complete:
-   * Decrement semaphore count.
-   * If count is less than 0, place PCB on SemQ by using GetNextProcess and return 1.
-   * Else, return a 0.
-   */
+  printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sema->count) ;
+  
+  if(Sema->count < 0) {
+    printf("Placing process on SemQ.\n");
+
+    /* if SemQ is NULL, then place PCB at head of the SemQ
+     * else go to SemQ tail and place PCB there
+     * 
+     * Could probably be made easier by making a global pointer to SemQ tail
+     * and then calling MoveToTail method, but I was too lazy for that.
+     * Funny how being lazy involves more work.
+     */
+    if(Sema->SemQ == NULL) {
+      Sema->SemQ = Current;
+    }
+    else {
+      tmp = Sema->SemQ;
+      while(tmp->Next_PCB != NULL) {
+        tmp = tmp->Next_PCB;
+      }
+      tmp->Next_PCB = Current;
+      tmp->Next_PCB->Next_PCB = NULL;
+    }
+    
+    return 1;
+  }
+  else {
+    printf("Process was not placed on SemQ.\n");
+    return 0;
+  }
 }
 
-void Signal(struct Semaphore *Goo)
+void Signal(struct Semaphore *Sema)
 {
-  struct PCB *tmp, *tmp1 ;
-  printf("In Signal. Count is %d\n", Goo->count) ;
-  /* Steps to complete:
-   * Increment semaphore count.
-   * If count is less than OR equal to 0, remove PCB from SemQ and place on the RQ.
-   */
+  Sema->count++;
+  struct PCB *tmp ;
+  printf("In Signal. Count is %d\n", Sema->count) ;
+  
+  if(Sema->count <= 0) {
+    tmp = GetNextProcess(&Sema->SemQ);
+    printf("Moving process from SemQ to tail of RQ.\n");
+    MovetoTail(tmp, &RQT);
+  }
+
 }
 
 void Create_PCBs()
