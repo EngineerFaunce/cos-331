@@ -9,10 +9,10 @@ all: source
 source: main.o Opcodes.o
 	$(CC) $(CFLAGS) -o Project2 Opcodes.o main.o
 
-main.o: main.c Vars.h
+main.o: main.c Vars.h Functions.h
 	$(CC) $(CFLAGS) -c main.c -o main.o
 
-Opcodes.o: Opcodes.c Vars.h
+Opcodes.o: Opcodes.c Vars.h Functions.h
 	$(CC) $(CFLAGS) -c Opcodes.c -o Opcodes.o
 
 clean:
