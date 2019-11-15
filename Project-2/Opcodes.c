@@ -70,7 +70,7 @@ int ExecuteProc(struct PCB *Current)
 			case 36:	PC++ ; blocked = OS_Trap(IR, CurrentProc) ;
 						if(blocked)
 							return(-1) ;
-							break ;
+						break ;
 			case 99: printf("ALL DONE\n") ; Done = 1 ; break;
 			default: printf("Instruction %d not found!~\n", opcode) ;
 			exit(0) ;
