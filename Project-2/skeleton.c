@@ -8,9 +8,10 @@
 #include "Vars.h"
 
 struct Semaphore
- { int count ;
-   struct PCB *Sem_Queue ;
- } ;
+{
+  int count ;
+  struct PCB *Sem_Queue ;
+} ;
 
 struct Semaphore Forks[5] ;
 struct Semaphore Doorman ;
@@ -50,9 +51,7 @@ char input_line [7] ;
 
 struct PCB *RQ, *tmp, *RQT, *Current ;
 
-
-int main()
-{
+int main() {
   /*basically same as before. You are creating 5 philosopher processes (with identical code),
     and creating two separate PB programs: one with the array of fork semaphores and one where the doorman
     Is added.
@@ -60,97 +59,93 @@ int main()
     Make sure you initialize the semaphores!!
   */
 
-    |
-    |
-    |
-    |
-    |
 
-while(1)
-          {
 
-                Current = GetNextProcess(&RQ) ;
-                RestoreState(Current) ;
-                printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
-                int Completed = ExecuteProc(Current) ;
-              
-                if (Completed == -1)
-                      {printf("Current Process is Blocked on Semaphore.\n”) ;
-                       SaveState(&Current) ;
-                       }
-                
-                if(Completed == 0)
-                      {SaveState(&Current) ;
-                       printf("Moving PID %d to TAIL\n", Current->PID) ;
-                       MvToTail(Current, &RQT) ;
-                       printf("RQT is %d\n", RQT->PID) ;
-                       if(RQ == NULL)
-                          RQ = RQT ;
-                      }
 
-                if (Completed == 1)
-                      {
-                       printf("Removing PID %d\n", Current->PID) ;
-                       DeletePCB(Current) ;
-                      }
+  while(1)
+  {
+    Current = GetNextProcess(&RQ) ;
+    RestoreState(Current) ;
+    printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
+    int Completed = ExecuteProc(Current) ;
 
-                     
-             PrintQ(RQ) ;
-             
-                if (RQ == NULL)
-                        break ;
-        }
-    return(0) ;
- }
+    if (Completed == -1)
+    {
+      printf("Current Process is Blocked on Semaphore.\n") ;
+      SaveState(&Current) ;
+    }
 
- //NOTE: Any general purpose registers can be used to hold the system call number and
- //OP1 of the Trap Instruction. However, I assume R0 will always be used to hold the system
- //call number and R1 will be Op1 of the Trap instruction.
+    if(Completed == 0)
+    {
+      SaveState(&Current) ;
+      printf("Moving PID %d to TAIL\n", Current->PID) ;
+      MvToTail(Current, &RQT) ;
+      printf("RQT is %d\n", RQT->PID) ;
+      if(RQ == NULL)
+        RQ = RQT ;
+    }
 
-  /* New Functions */
+    if (Completed == 1)
+    {
+      printf("Removing PID %d\n", Current->PID) ;
+      DeletePCB(Current) ;
+    }
 
-  /* OS_Trap is called by the process when it executes Opcode 36.
-    It returns a value of 1 if the calling process is blocked and 0 if it is
-    not blocked. It performs the following actions:
-  
-    1) Determines the system call being made.
-    2) Calls function Wait, Signal, or GetPID depending on the requested operation. It
-       passes the address of the semaphore to be operated on in the case of Wait and
-       Signal, and the struct PCB * in case of GetPID.
-    3) Returns the value returned by Wait, Signal, or GetPID.
-  */
+    PrintQ(RQ) ;
 
-    int OS_Trap(char *IR, struct PCB *Current)
-      {}
+    if (RQ == NULL)
+      break ;
+  }
+  return(0) ;
+}
 
-  /* Performs basic wait operation on the semaphore parameter.
-     Decrements the count variable, and, if it is less than 0, places
+
+//NOTE: Any general purpose registers can be used to hold the system call number and
+//OP1 of the Trap Instruction. However, I assume R0 will always be used to hold the system
+//call number and R1 will be Op1 of the Trap instruction.
+
+/* New Functions */
+
+/* OS_Trap is called by the process when it executes Opcode 36.
+  It returns a value of 1 if the calling process is blocked and 0 if it is
+  not blocked. It performs the following actions:
+
+  1) Determines the system call being made.
+  2) Calls function Wait, Signal, or GetPID depending on the requested operation. It
+      passes the address of the semaphore to be operated on in the case of Wait and
+      Signal, and the struct PCB * in case of GetPID.
+  3) Returns the value returned by Wait, Signal, or GetPID.
+*/
+
+int OS_Trap(char *IR, struct PCB *Current)
+{}
+
+/*  Performs basic wait operation on the semaphore parameter.
+    Decrements the count variable, and, if it is less than 0, places
     the PCB of the caller on Set->Sem_Queue, and returns a 1 indicating
-     the process is blocked on the semaphore. Otherwise, it returns a 0.
-  
-    int Wait(struct PCB *Current, struct Semaphore *Sem)
-     {}
+    the process is blocked on the semaphore. Otherwise, it returns a 0.
+*/
+int Wait(struct PCB *Current, struct Semaphore *Sem)
+{}
 
-  /*Signal performs the basic signal operation on a semaphore. It increments the count
-    variable, and, if it is <= 0, it picks the PCB from the head of the semaphore
-    Queue and places it on the Ready Queue. It always returns a 0.
-  */
-   
-    int Signal(struct Semaphore *Sem)
-     {}
- 
-  /*GetPID places PID of process in Register R1. While the programmer can specify any
+/*Signal performs the basic signal operation on a semaphore. It increments the count
+  variable, and, if it is <= 0, it picks the PCB from the head of the semaphore
+  Queue and places it on the Ready Queue. It always returns a 0.
+*/ 
+int Signal(struct Semaphore *Sem)
+{}
+
+/*  GetPID places PID of process in Register R1. While the programmer can specify any
     register, it is a lot simpler to always put it in R1.
-     Always returns a 0
-  */
-     int GetPID(struct PCB *Current)
-      {}
+    Always returns a 0
+*/
+int GetPID(struct PCB *Current)
+{}
 
-  /*Here is the code for instruction 36. Note that it is not processed as a regular instruction
+/*  Here is the code for instruction 36. Note that it is not processed as a regular instruction
     (That is, there is no OP36() function, the logic is handled as follows:
-  */
-
-    case 36: PC++ ; blocked  = OS_Trap(IR, CurrentProc) ;
-            if(blocked)
-                return(-1) ;
-               break ;
+*/
+case 36: PC++ ; blocked  = OS_Trap(IR, CurrentProc) ;
+  if(blocked)
+      return(-1) ;
+      break ;
