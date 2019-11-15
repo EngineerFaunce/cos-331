@@ -118,7 +118,6 @@ void Signal(struct Semaphore *Sema)
     printf("Moving process from SemQ to tail of RQ.\n");
     MovetoTail(tmp, &RQT);
   }
-
 }
 
 void Create_PCBs()
