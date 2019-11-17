@@ -19,7 +19,7 @@ void LoadProgram(int PID, struct PCB **tmp)
     int program_line = 100 * PID ;
     (*tmp)->BaseReg  = program_line ;
     (*tmp)->LimitReg = program_line + 100;
-    fp = open("fibonacci.pb", O_RDONLY) ; //always check the return value.
+    fp = open("forks.pb", O_RDONLY) ; //always check the return value.
     printf("Open is %d\n", fp) ;
 
     if (fp < 0) //error in read
