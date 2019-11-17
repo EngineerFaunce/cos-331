@@ -52,12 +52,12 @@ char input_line [7] ;
 struct PCB *RQ, *tmp, *RQT, *Current ;
 
 int main() {
-  /*basically same as before. You are creating 5 philosopher processes (with identical code),
-    and creating two separate PB programs: one with the array of fork semaphores and one where the doorman
-    Is added.
+/*  basically same as before. You are creating 5 philosopher processes (with identical code),
+    and creating two separate PB programs: one with the array of fork semaphores and one where
+    the doorman is added.
 
     Make sure you initialize the semaphores!!
-  */
+*/
 
 
 
@@ -121,12 +121,15 @@ while(1)
 int OS_Trap(char *IR, struct PCB *Current)
 {}
 
-/*  Performs basic wait operation on the semaphore parameter.
-    Decrements the count variable, and, if it is less than 0, places
-    the PCB of the caller on Set->Sem_Queue, and returns a 1 indicating
-    the process is blocked on the semaphore. Otherwise, it returns a 0.
+/*  Wait performs the basic wait operation on a semaphore.
+    Decrements the count variable.
+
+    If count < 0, it places the PCB of the caller on Sema->Sem_Queue, 
+    and returns a 1 indicating the process is blocked on the semaphore. 
+    
+    Otherwise, it returns a 0.
 */
-int Wait(struct PCB *Current, struct Semaphore *Sem)
+int Wait(struct PCB *Current, struct Semaphore *Sema)
 {
     Sema->count--;
     struct PCB *tmp ;
@@ -156,9 +159,11 @@ int Wait(struct PCB *Current, struct Semaphore *Sem)
     }
 }
 
-/*Signal performs the basic signal operation on a semaphore. It increments the count
-  variable, and, if it is <= 0, it picks the PCB from the head of the semaphore
-  Queue and places it on the Ready Queue. It always returns a 0.
+/*  Signal performs the basic signal operation on a semaphore. 
+    Increments the count variable.
+    If it is <= 0, it picks the PCB from the head of the SemQ and places it on the Ready Queue.
+    
+    It always returns a 0.
 */ 
 int Signal(struct Semaphore *Sema)
 {
