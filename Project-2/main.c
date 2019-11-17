@@ -10,8 +10,8 @@
 
 struct Semaphore
 {
-  int count ;
-  struct PCB *Sem_Queue ;
+    int count ;
+    struct PCB *Sem_Queue ;
 } ;
 
 struct Semaphore Forks[5] ;
@@ -62,8 +62,8 @@ int main() {
 
 
 
-  while(1)
-  {
+while(1)
+{
     Current = GetNextProcess(&RQ) ;
     RestoreState(Current) ;
     printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
@@ -71,32 +71,33 @@ int main() {
 
     if (Completed == -1)
     {
-      printf("Current Process is Blocked on Semaphore.\n") ;
-      SaveState(&Current) ;
+        printf("Current Process is Blocked on Semaphore.\n") ;
+        SaveState(&Current) ;
     }
 
     if(Completed == 0)
     {
-      SaveState(&Current) ;
-      printf("Moving PID %d to TAIL\n", Current->PID) ;
-      MvToTail(Current, &RQT) ;
-      printf("RQT is %d\n", RQT->PID) ;
-      if(RQ == NULL)
+        SaveState(&Current) ;
+        printf("Moving PID %d to TAIL\n", Current->PID) ;
+        MvToTail(Current, &RQT) ;
+        printf("RQT is %d\n", RQT->PID) ;
+        if(RQ == NULL)
         RQ = RQT ;
     }
 
     if (Completed == 1)
     {
-      printf("Removing PID %d\n", Current->PID) ;
-      DeletePCB(Current) ;
+        printf("Removing PID %d\n", Current->PID) ;
+        DeletePCB(Current) ;
     }
 
     PrintQ(RQ) ;
 
     if (RQ == NULL)
-      break ;
-  }
-  return(0) ;
+        break ;
+    }
+
+    return(0) ;
 }
 
 
@@ -127,32 +128,32 @@ int OS_Trap(char *IR, struct PCB *Current)
 */
 int Wait(struct PCB *Current, struct Semaphore *Sem)
 {
-  Sema->count--;
-  struct PCB *tmp ;
-  printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sema->count) ;
-  
-  if(Sema->count < 0) {
-    printf("Placing process on SemQ.\n");
+    Sema->count--;
+    struct PCB *tmp ;
+    printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sema->count) ;
 
-    /* if SemQ is NULL, then place PCB at head of the SemQ
-     * else go to SemQ tail and place PCB there
-     */
-    if(Sema->SemQ == NULL)
-      Sema->SemQ = Current;
-    else {
-      tmp = Sema->SemQ;
-      while(tmp->Next_PCB != NULL)
-        tmp = tmp->Next_PCB;
-      tmp->Next_PCB = Current;
-      tmp->Next_PCB->Next_PCB = NULL;
+    if(Sema->count < 0) {
+        printf("Placing process on SemQ.\n");
+
+        /* if SemQ is NULL, then place PCB at head of the SemQ
+         * else go to SemQ tail and place PCB there
+         */
+        if(Sema->SemQ == NULL)
+            Sema->SemQ = Current;
+        else {
+            tmp = Sema->SemQ;
+            while(tmp->Next_PCB != NULL)
+            tmp = tmp->Next_PCB;
+            tmp->Next_PCB = Current;
+            tmp->Next_PCB->Next_PCB = NULL;
+        }
+
+        return 1;
     }
-    
-    return 1;
-  }
-  else {
+    else {
     printf("Process was not placed on SemQ.\n");
     return 0;
-  }
+    }
 }
 
 /*Signal performs the basic signal operation on a semaphore. It increments the count
@@ -161,15 +162,15 @@ int Wait(struct PCB *Current, struct Semaphore *Sem)
 */ 
 int Signal(struct Semaphore *Sema)
 {
-  Sema->count++;
-  struct PCB *tmp ;
-  printf("In Signal. Count is %d\n", Sema->count) ;
-  
-  if(Sema->count <= 0) {
-    tmp = GetNextProcess(&Sema->SemQ);
-    printf("Moving process from SemQ to tail of RQ.\n");
-    MovetoTail(tmp, &RQT);
-  }
+    Sema->count++;
+    struct PCB *tmp ;
+    printf("In Signal. Count is %d\n", Sema->count) ;
+
+    if(Sema->count <= 0) {
+        tmp = GetNextProcess(&Sema->SemQ);
+        printf("Moving process from SemQ to tail of RQ.\n");
+        MovetoTail(tmp, &RQT);
+    }
 }
 
 /*  GetPID places PID of process in Register R1. While the programmer can specify any
@@ -178,5 +179,5 @@ int Signal(struct Semaphore *Sema)
 */
 int GetPID(struct PCB *Current)
 {
-  //
+    //
 }
