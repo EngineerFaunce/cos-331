@@ -17,14 +17,13 @@ struct Semaphore
 struct Semaphore Forks[5] ;
 struct Semaphore Doorman ;
 
-// New functions for Project 3
-
+// New functions for Project 2
 int OS_Trap(char *, struct PCB *) ;
 int Wait(struct PCB* , struct Semaphore *) ;
 int Signal(struct Semaphore *) ;
 int GetPID(struct PCB *) ;
 
-// Previous Functions, defined in Function.h to keep main.c neater
+// Previous functions, defined in Function.h to keep main.c neater
 extern struct PCB *GetNextProcess(struct PCB **Head);
 extern void DeletePCB(struct PCB *Current);
 extern void MvToTail (struct PCB *Current, struct PCB **RQT);
@@ -33,22 +32,16 @@ extern void RestoreState(struct PCB *NextProc);
 extern void SaveState(struct PCB **PrevProc);
 extern void LoadProgram(int PID, struct PCB **tmp);
 
-// ExecuteProc is found in Opcodes.c
+// Previous functions found in Opcodes.c
 extern int ExecuteProc(struct PCB *CurrentProc);
+extern int ParseOp1Reg (char *) ;
 
-
-//Must declare Opcode Functions. Otherwise, end up with a boat load of
-//highly annoying compiler warnings!
-
-/*These variables are associated with the implementation of the VM*/
+/* These variables are associated with the implementation of the VM */
 int i, j, k ;
 int ProgSize ;
 char input_line [7] ;
 
-/*I made these global to make implementation a bit easier.
-  You do not have to.
-*/
-
+// global pointers for use in RQ
 struct PCB *RQ, *tmp, *RQT, *Current ;
 
 int main() {
