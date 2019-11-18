@@ -112,7 +112,9 @@ while(1)
 */
 
 int OS_Trap(char *IR, struct PCB *Current)
-{}
+{
+
+}
 
 /*  Wait performs the basic wait operation on a semaphore.
     Decrements the count variable.
@@ -139,7 +141,7 @@ int Wait(struct PCB *Current, struct Semaphore *Sema)
         else {
             tmp = Sema->SemQ;
             while(tmp->Next_PCB != NULL)
-            tmp = tmp->Next_PCB;
+                tmp = tmp->Next_PCB;
             tmp->Next_PCB = Current;
             tmp->Next_PCB->Next_PCB = NULL;
         }
@@ -147,8 +149,8 @@ int Wait(struct PCB *Current, struct Semaphore *Sema)
         return 1;
     }
     else {
-    printf("Process was not placed on SemQ.\n");
-    return 0;
+        printf("Process was not placed on SemQ.\n");
+        return 0;
     }
 }
 
