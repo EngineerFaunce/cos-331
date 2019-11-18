@@ -171,11 +171,11 @@ int Signal(struct Semaphore *Sema)
     }
 }
 
-/*  GetPID places PID of process in Register R1. While the programmer can specify any
-    register, it is a lot simpler to always put it in R1.
+/*  GetPID places PID of process in Register R1.
     Always returns a 0
 */
 int GetPID(struct PCB *Current)
 {
-    //
+    R1 = Current->PID;
+    return 0;
 }
