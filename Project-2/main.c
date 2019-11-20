@@ -51,43 +51,44 @@ int main() {
 
     Make sure you initialize the semaphores!!
 */
+    Forks = {1,1,1,1,1};
+    Doorman = 1;
 
 
 
-
-while(1)
-{
-    Current = GetNextProcess(&RQ) ;
-    RestoreState(Current) ;
-    printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
-    int Completed = ExecuteProc(Current) ;
-
-    if (Completed == -1)
+    while(1)
     {
-        printf("Current Process is Blocked on Semaphore.\n") ;
-        SaveState(&Current) ;
-    }
+        Current = GetNextProcess(&RQ) ;
+        RestoreState(Current) ;
+        printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
+        int Completed = ExecuteProc(Current) ;
 
-    if(Completed == 0)
-    {
-        SaveState(&Current) ;
-        printf("Moving PID %d to TAIL\n", Current->PID) ;
-        MvToTail(Current, &RQT) ;
-        printf("RQT is %d\n", RQT->PID) ;
-        if(RQ == NULL)
-        RQ = RQT ;
-    }
+        if (Completed == -1)
+        {
+            printf("Current Process is Blocked on Semaphore.\n") ;
+            SaveState(&Current) ;
+        }
 
-    if (Completed == 1)
-    {
-        printf("Removing PID %d\n", Current->PID) ;
-        DeletePCB(Current) ;
-    }
+        if(Completed == 0)
+        {
+            SaveState(&Current) ;
+            printf("Moving PID %d to TAIL\n", Current->PID) ;
+            MvToTail(Current, &RQT) ;
+            printf("RQT is %d\n", RQT->PID) ;
+            if(RQ == NULL)
+                RQ = RQT ;
+        }
 
-    PrintQ(RQ) ;
+        if (Completed == 1)
+        {
+            printf("Removing PID %d\n", Current->PID) ;
+            DeletePCB(Current) ;
+        }
 
-    if (RQ == NULL)
-        break ;
+        PrintQ(RQ) ;
+
+        if (RQ == NULL)
+            break ;
     }
 
     return(0) ;
