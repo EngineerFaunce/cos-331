@@ -129,7 +129,7 @@ int Wait(struct PCB *Current, struct Semaphore *Sema)
 {
     Sema->count--;
     struct PCB *tmp ;
-    printf("In Wait with PID %d  Sem.Count = %d\n", Current->PID, Sema->count) ;
+    printf("In Wait with PID %d  Sem.count = %d\n", Current->PID, Sema->count) ;
 
     if(Sema->count < 0) {
         printf("Placing process on SemQ.\n");
@@ -165,11 +165,11 @@ int Signal(struct Semaphore *Sema)
 {
     Sema->count++;
     struct PCB *tmp ;
-    printf("In Signal. Count is %d\n", Sema->count) ;
+    printf("In Signal with PID %d. Sem.count = %d\n", Current->PID, Sema->count) ;
 
     if(Sema->count <= 0) {
         tmp = GetNextProcess(&Sema->SemQ);
-        printf("Moving process from SemQ to tail of RQ.\n");
+        printf("Moving PID %d from SemQ to tail of RQ.\n", Current->PID);
         MovetoTail(tmp, &RQT);
     }
 }
