@@ -67,10 +67,11 @@ int ExecuteProc(struct PCB *Current)
 			case 33:   	OP33(IR,&PC) ; Current->IC--; break ; 
 			case 34:   	OP34(IR,&PC) ; Current->IC--; break ; 
 			case 35:   	OP35(IR, &PC) ; Current->IC--; break ; 
-			case 36:	PC++ ; blocked = OS_Trap(IR, CurrentProc) ;
+			case 36:	PC++ ; blocked = OS_Trap(IR, Current) ;
 						if(blocked)
 							return(-1) ;
 						break ;
+			case 37:	OP37(IR) ; PC++ ; Current->IC-- ; break;
 			case 99: printf("ALL DONE\n") ; Done = 1 ; break;
 			default: printf("Instruction %d not found!~\n", opcode) ;
 			exit(0) ;
@@ -281,7 +282,7 @@ int ExecuteProc(struct PCB *Current)
 		Value = FetchData(Address) ;
 		ACC = Value ;
 		PrintRegs() ;
-		PrintLocation(Address) ;		// used for debugging, remove once project complete
+		//PrintLocation(Address) ;		// used for debugging, remove once project complete
 		printf("************************************************\n\n") ;
 	}
 
@@ -714,3 +715,17 @@ int ExecuteProc(struct PCB *Current)
         printf("New PC is %d\n", *PC) ;
 	 	printf("*****************************************\n\n") ;
     }
+
+	// modulo function
+	void OP37(char *IR)
+	{
+		int VAL, VAL2;
+		printf("Opcode = 37. Perform modulo operation\n") ;
+		PrintIR(IR) ;
+		VAL = ParseOp1Reg(IR) ;
+		VAL2 = ParseOp2Reg(IR) ;
+
+		ACC = VAL % VAL2 ;
+		printf("ACC set to value %d\n", ACC) ;
+		printf("*********************************************\n\n") ;
+	}
