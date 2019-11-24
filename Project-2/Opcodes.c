@@ -383,7 +383,6 @@ int ExecuteProc(struct PCB *Current)
 		int VAL ;
         printf("Opcode = 12. Load Register R0 Immediate\n");
 	 	PrintIR(IR) ;
-        PrintIR(IR) ;
 		VAL = ParseOP1andOP2Imm(IR) ;
 	 	printf("P1&2Imm returned %d\n", VAL) ;
 	 	RRegs[0]  = VAL ;
