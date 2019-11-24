@@ -14,7 +14,7 @@ struct PCB
     struct PCB *Next_PCB ;
     int PID ;                       // process ID (0,1,2,3, etc.)
     short int PC, P0, P1, P2, P3;   // program counter and pointer registers
-    int IC ;                        //number of instructions before preemption (i.e., time slice)
+    int IC ;                        // number of instructions before preemption (i.e., time slice)
     int R0, R1, R2, R3 ;            // general purpose registers
     char PSW[2] ;
     int ACC ;                       // accumulator
