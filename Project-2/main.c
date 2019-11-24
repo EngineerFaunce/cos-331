@@ -35,6 +35,7 @@ extern void LoadProgram(int PID, struct PCB **tmp);
 // Previous functions found in Opcodes.c
 extern int ExecuteProc(struct PCB *CurrentProc);
 extern int ParseOp1Reg (char *) ;
+extern int ParseOp2Reg (char *) ;
 
 /* These variables are associated with the implementation of the VM */
 int i, j, k ;
@@ -95,26 +96,51 @@ int main() {
 }
 
 
-//NOTE: Any general purpose registers can be used to hold the system call number and
-//OP1 of the Trap Instruction. However, I assume R0 will always be used to hold the system
-//call number and R1 will be Op1 of the Trap instruction.
-
 /* New Functions */
 
-/* OS_Trap is called by the process when it executes Opcode 36.
-  It returns a value of 1 if the calling process is blocked and 0 if it is
-  not blocked. It performs the following actions:
+/*  OS_Trap is called by the process when it executes Opcode 36.
+    It returns a value of 1 if the calling process is blocked and 0 if it is
+    not blocked. It performs the following actions:
 
-  1) Determines the system call being made.
-  2) Calls function Wait, Signal, or GetPID depending on the requested operation. It
-      passes the address of the semaphore to be operated on in the case of Wait and
-      Signal, and the struct PCB * in case of GetPID.
-  3) Returns the value returned by Wait, Signal, or GetPID.
+    1) Determines the system call being made.
+    2) Calls function Wait, Signal, or GetPID depending on the requested operation. It
+        passes the address of the semaphore to be operated on in the case of Wait and
+        Signal, and the struct PCB * in case of GetPID.
+    3) Returns the value returned by Wait, Signal, or GetPID.
 */
 
 int OS_Trap(char *IR, struct PCB *Current)
 {
+    int RegVal = ParseOp1Reg(IR) ;
+    int RegVal2 = ParseOp2Reg(IR) ;
 
+    int sysCall = RRegs[RegVal] ;
+    int semID = RRegs[RegVal2] ;
+
+    if(sysCall == 0) {
+        printf("Detected Wait system call.\n") ;
+        if(semID == 0)
+            return Wait(Current, Forks[ACC]) ;
+        else if(semID == 1)
+            return Wait(Current, Doorman) ;
+        else {
+            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", VAL2) ;
+            exit(2) ;
+        }
+        
+    }
+    else if(sysCall == 1) {
+        printf("Detected Signal system call.\n") ;
+        return Signal(Forks[ACC]) ;
+    }
+    else if(sysCall == 2) {
+        printf("Detected GetPID system call.\n") ;
+        return GetPID(Current) ;
+    }
+    else {
+        printf("Expected 0, 1, or 2. Got %d. Exiting program.", VAL) ;
+        exit(3) ;
+    }
 }
 
 /*  Wait performs the basic wait operation on a semaphore.
