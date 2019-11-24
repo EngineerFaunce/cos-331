@@ -68,9 +68,7 @@ int ExecuteProc(struct PCB *Current)
 			case 34:   	OP34(IR,&PC) ; Current->IC--; break ; 
 			case 35:   	OP35(IR, &PC) ; Current->IC--; break ; 
 			case 36:	PC++ ; blocked = OS_Trap(IR, Current) ;
-						if(blocked)
-							return(-1) ;
-						break ;
+						if(blocked) { return(-1); } break ; 
 			case 37:	OP37(IR) ; PC++ ; Current->IC-- ; break;
 			case 99: printf("ALL DONE\n") ; Done = 1 ; break;
 			default: printf("Instruction %d not found!~\n", opcode) ;
@@ -271,7 +269,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("************************************************\n\n") ;
 	}
     
-	// modified
 	void OP4(char *IR)
 	{
 		int PREG, Value, Address ;
@@ -286,7 +283,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("************************************************\n\n") ;
 	}
 
-	// modified
 	void OP5(char *IR)
 	{
 		int PREG, Value, Address ;
@@ -300,7 +296,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("**********************************************\n\n") ;
     }
 
-	// modified
 	void OP6(char *IR)
     {
 		int PREG, Address ;
@@ -315,7 +310,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("********************************************\n\n") ;
     }
 
-	// modified
 	void OP7(char *IR)
 	{
 		int PREG, Address ;
@@ -328,7 +322,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("*********************************************\n\n") ;
     }
 
-	// modified
 	void OP8(char *IR)
     {
 		int PREG, RREG, Value, Address ;
@@ -343,7 +336,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("***********************************************\n\n") ;
     }
 
-	// modified
 	void OP9(char *IR)
     {
 		int RREG, Address ;
@@ -358,7 +350,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("**********************************************\n\n") ;
     }
 
-	// modified
 	void OP10(char *IR)
 	{
 		int RREG, PREG, Value, Address ;
@@ -373,7 +364,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("************************************************\n\n") ;
     }
 
-	// modified
 	void OP11(char *IR)
     {
 		int RREG, PREG, Value, Address ;
@@ -488,7 +478,6 @@ int ExecuteProc(struct PCB *Current)
 		printf("*****************************************************\n\n") ;
     }
 
-	// modified
 	void OP20(char *IR)
     {
 		int PREG, VAL ;
@@ -502,7 +491,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("**********************************************************\n\n") ;
     }
 
-	// modified
 	void OP21(char *IR)
     {
 		int Address, VAL ;
@@ -516,7 +504,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("*******************************************************\n\n") ;
 	}
 
-	// modified
 	void OP22(char *IR)
     {
 		int PREG, VAL ;
@@ -529,7 +516,6 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("********************************************************\n\n") ;
     }
 
-	// modified
 	void OP23(char *IR)
     {
 		int Address, VAL ;
@@ -622,7 +608,7 @@ int ExecuteProc(struct PCB *Current)
 	 	printf("**********************************************\n\n") ;
     }
 
-	 void OP29(char *IR)
+	void OP29(char *IR)
     {
     	int VAL ;
 		//int PREG ;
@@ -715,6 +701,8 @@ int ExecuteProc(struct PCB *Current)
         printf("New PC is %d\n", *PC) ;
 	 	printf("*****************************************\n\n") ;
     }
+
+	/* Note that there is no Opcode 36 since it is handled inside the switch case */
 
 	// modulo function
 	void OP37(char *IR)
