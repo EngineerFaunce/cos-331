@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Vars.h"
+#include "Functions.h"
 
 struct Semaphore
 {
@@ -16,42 +17,36 @@ struct Semaphore
 struct Semaphore Forks[5] ;
 struct Semaphore Doorman ;
 
-// New functions for Project 2
-int OS_Trap(char *, struct PCB *) ;
-int Wait(struct PCB* , struct Semaphore *) ;
-int Signal(struct Semaphore *) ;
-int GetPID(struct PCB *) ;
-
 // Previous functions, defined in Function.h to keep main.c neater
-struct PCB *GetNextProcess(struct PCB **Head);
-void DeletePCB(struct PCB *Current);
-void MvToTail (struct PCB *Current, struct PCB **RQT);
-void PrintQ(struct PCB *Head);
-void RestoreState(struct PCB *NextProc);
-void SaveState(struct PCB **PrevProc);
-void Create_PCBs() ;
-void LoadPrograms() ;
-void LoadProgram(int PID, struct PCB **tmp);
+extern struct PCB *GetNextProcess(struct PCB **Head);
+extern void DeletePCB(struct PCB *Current);
+extern void MvToTail (struct PCB *Current, struct PCB **RQT);
+extern void PrintQ(struct PCB *Head);
+extern void RestoreState(struct PCB *NextProc);
+extern void SaveState(struct PCB **PrevProc);
+extern void Create_PCBs() ;
+extern void LoadPrograms() ;
+extern void LoadProgram(int PID, struct PCB **tmp);
 
 // Previous functions found in Opcodes.c
 extern int ExecuteProc(struct PCB *CurrentProc);
 extern int ParseOp1Reg (char *) ;
 extern int ParseOp2Reg (char *) ;
 
-/* These variables are associated with the implementation of the VM */
-int i, j, k ;
-int ProgSize ;
-char input_line [7] ;
-
-int Max_Line = 0;
+// New functions for Project 2
+int OS_Trap(char *, struct PCB *) ;
+int Wait(struct PCB* , struct Semaphore *) ;
+int Signal(struct Semaphore *) ;
+int GetPID(struct PCB *) ;
 
 // global pointers for use in RQ
 struct PCB *RQ, *tmp, *RQT, *Current ;
 
+int Max_Line = 0;
+
 int main() {
-    for(int x=0; x < 5; x++) {
+    for(int x=0; x < 5; x++)
         Forks[x].count = 1;
-    }
     Doorman.count = 1;
 
     Create_PCBs();
@@ -95,172 +90,7 @@ int main() {
     return(0) ;
 }
 
-/* Old Functions */
-
-void Create_PCBs()
-{
-    RQ = (struct PCB *) malloc (sizeof (struct PCB)) ;
-    RQ->PID = 0;
-    RQ->IC = (rand() % 200) + 5 ;
-    tmp = RQ ;
-    for(i = 1; i < 10; i++)
-    {       
-        tmp->Next_PCB = (struct PCB *) malloc (sizeof (struct PCB)) ;
-        tmp->Next_PCB->PID = i ;
-
-        tmp->Next_PCB->IC = (rand() % 200) + 5 ; //rand returns 0 .. MAX
-        tmp->Next_PCB->Next_PCB = NULL ;
-        tmp = tmp->Next_PCB ;
-    }
-
-    RQT = tmp ;
-    RQT->Next_PCB = NULL ;
-}
-
-void LoadPrograms()
-{   struct PCB *tmp ;
-  	tmp = RQ ;
-  	for (i = 0; i < 5 ; i++)
-    {
-        LoadProgram(i, &tmp) ;
-        printf("LimitReg = %d. IC = %d\n", tmp->LimitReg, tmp->IC) ;
-        tmp = tmp->Next_PCB ;
-    }
-}
-
-void LoadProgram(int PID, struct PCB **tmp)
-{
-    int i, fp ;
-    int program_line = 100 * PID ;
-    (*tmp)->BaseReg  = program_line ;
-    (*tmp)->LimitReg = program_line + 100;
-    fp = open("doorman.pb", O_RDONLY) ; //always check the return value.
-    printf("Open is %d\n", fp) ;
-
-    if (fp < 0) //error in read
-    {       
-        printf("Could not open file\n");
-        exit(0) ;
-    }
-
-    int ret = read (fp, input_line, 8) ; //returns number of characters read`
-    printf("***Number of char read: %d***\n", ret);
-
-    while (1)
-    {
-        if (ret <= 0) //indicates end of file or error
-            break ; //breaks out of infinite loop
-
-        printf("Copying Program line %d into memory\n", program_line) ;
-        for (i = 0; i < 6 ; i++)
-        {
-            memory[program_line][i] = input_line[i] ;
-            printf("%c ", memory[program_line][i]) ;
-        }
-        printf("\n") ;
-
-        ret = read (fp, input_line, 8) ;
-        printf("***Number of char read: %d***\n", ret);
-        program_line++ ; //now at a new line in the prog
-    }
-
-    printf("Read in Code. Closing File\n") ;
-    printf("----------------------------------------------\n") ;
-    close(fp) ;
-}
-
-/*	This function restores the state of the process that is set to begin its
-    execution
-*/
-void RestoreState(struct PCB *NextProc) {
-    PRegs[0] = NextProc->P0;
-    PRegs[1] = NextProc->P1;
-    PRegs[2] = NextProc->P2;
-    PRegs[3] = NextProc->P3;
-
-    RRegs[0] = NextProc->R0;
-    RRegs[1] = NextProc->R1;
-    RRegs[2] = NextProc->R2;
-    RRegs[3] = NextProc->R3;
-
-    BaseRegister = NextProc->BaseReg;
-    LimitRegister = NextProc->LimitReg;
-
-    ACC = NextProc->ACC;
-    PSW[0] = NextProc->PSW[0];
-    PSW[1] = NextProc->PSW[1];
-
-    PC = NextProc->PC;
-}
-
-/*	This function saves the state of the VM into the PCB of the process that
-    just completed its "time slice"
-*/
-void SaveState(struct PCB **PrevProc) {
-    (*PrevProc)->P0 = PRegs[0];
-    (*PrevProc)->P1 = PRegs[1];
-    (*PrevProc)->P2 = PRegs[2];
-    (*PrevProc)->P3 = PRegs[3];
-
-    (*PrevProc)->R0 = RRegs[0];
-    (*PrevProc)->R1 = RRegs[1];
-    (*PrevProc)->R2 = RRegs[2];
-    (*PrevProc)->R3 = RRegs[3];
-
-    (*PrevProc)->BaseReg = BaseRegister;
-    (*PrevProc)->LimitReg = LimitRegister;
-
-    (*PrevProc)->ACC = ACC;
-    (*PrevProc)->PSW[0] = PSW[0];
-    (*PrevProc)->PSW[1] = PSW[1];
-
-    (*PrevProc)->PC = PC;
-}
-
-/*	Deletes the PCB (using free) */
-void DeletePCB(struct PCB *Current) {
-    Current->Next_PCB = NULL;
-    free(Current);
-} 
-
-struct PCB *GetNextProcess(struct PCB **Head)
-{
-    struct PCB *tmp ;
-    tmp = *Head ;
-    if (tmp == NULL) {
-        printf("No more processes to get fool!\n") ;
-        exit(0) ;
-    }
-    *Head = (*Head)->Next_PCB ;
-    tmp->Next_PCB = NULL ;
-    return(tmp) ;
-}
-
-/*this function takes a pointer to the currently executing process and the address of the Ready
-  Queue Tail. It moves the Current process to the tail of the list and updates RQT.
-*/            
-void MvToTail(struct PCB *Current, struct PCB **RQT)
-{
-    (*RQT)->Next_PCB = Current ;
-    *RQT = Current ; 
-    (*RQT)->Next_PCB = NULL ;
-    if (RQ == NULL)
-        RQ = *RQT ;
-}
-
-void PrintQ(struct PCB *Head)
-{
-    struct PCB *tmp ;
-    tmp = Head ;
-    if (tmp == NULL) {
-        printf("Ready Queue is empty!\n") ;
-        return ;
-    }
-    while(tmp != NULL) {
-        printf("Process ID %d. \n", tmp->PID) ;
-        tmp = tmp->Next_PCB ;
-    }
-}
+//here
 
 /* New Functions */
 
@@ -284,7 +114,7 @@ int OS_Trap(char *IR, struct PCB *Current)
     int semID = RRegs[RegVal2] ;
 
     if(sysCall == 0) {
-        printf("Detected Wait system call.") ;
+        printf("Detected Wait system call. ") ;
         if(semID == 0) {
             printf("Calling Wait on Forks.\n") ;
             return Wait(Current, &Forks[ACC]) ;
@@ -299,7 +129,7 @@ int OS_Trap(char *IR, struct PCB *Current)
         }
     }
     else if(sysCall == 1) {
-        printf("Detected Signal system call.") ;
+        printf("Detected Signal system call. ") ;
         if(semID == 0) {
             printf("Calling Signal on Forks.\n") ;
             return Signal(&Forks[ACC]) ;
@@ -389,5 +219,3 @@ int GetPID(struct PCB *Current)
     RRegs[1] = Current->PID;
     return 0;
 }
-
-
