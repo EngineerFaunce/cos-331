@@ -18,8 +18,8 @@ void PrintQ(struct PCB *Head);
 void RestoreState(struct PCB *NextProc);
 void SaveState(struct PCB **PrevProc);
 void Create_PCBs() ;
-void LoadPrograms() ;
-void LoadProgram(int PID, struct PCB **tmp);
+void LoadPrograms(char file[]) ;
+void LoadProgram(int PID, struct PCB **tmp, char file[]);
 
 /* These variables are associated with the implementation of the VM */
 int i ;
@@ -47,24 +47,24 @@ void Create_PCBs()
     RQT->Next_PCB = NULL ;
 }
 
-void LoadPrograms()
+void LoadPrograms(char file[])
 {   struct PCB *tmp ;
   	tmp = RQ ;
   	for (i = 0; i < 5 ; i++)
     {
-        LoadProgram(i, &tmp) ;
+        LoadProgram(i, &tmp, file) ;
         printf("LimitReg = %d. IC = %d\n", tmp->LimitReg, tmp->IC) ;
         tmp = tmp->Next_PCB ;
     }
 }
 
-void LoadProgram(int PID, struct PCB **tmp)
+void LoadProgram(int PID, struct PCB **tmp, char file[])
 {
     int i, fp ;
     int program_line = 100 * PID ;
     (*tmp)->BaseReg  = program_line ;
     (*tmp)->LimitReg = program_line + 100;
-    fp = open("forks.pb", O_RDONLY) ; //always check the return value.
+    fp = open(file, O_RDONLY) ; //always check the return value.
     printf("Open is %d\n", fp) ;
 
     if (fp < 0) //error in read
