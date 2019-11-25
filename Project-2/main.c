@@ -25,8 +25,8 @@ extern void PrintQ(struct PCB *Head);
 extern void RestoreState(struct PCB *NextProc);
 extern void SaveState(struct PCB **PrevProc);
 extern void Create_PCBs() ;
-extern void LoadPrograms() ;
-extern void LoadProgram(int PID, struct PCB **tmp);
+extern void LoadPrograms(char file[]) ;
+extern void LoadProgram(int PID, struct PCB **tmp, char file[]);
 
 // Previous functions found in Opcodes.c
 extern int ExecuteProc(struct PCB *CurrentProc);
