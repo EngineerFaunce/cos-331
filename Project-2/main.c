@@ -120,14 +120,14 @@ int OS_Trap(char *IR, struct PCB *Current)
         printf("Detected Wait system call.") ;
         if(semID == 0) {
             printf("Calling Wait on Forks.\n") ;
-            return Wait(Current, Forks[ACC]) ;
+            return Wait(Current, &Forks[ACC]) ;
         }
         else if(semID == 1) {
             printf("Calling Wait on Doorman.\n") ;
-            return Wait(Current, Doorman) ;
+            return Wait(Current, &Doorman) ;
         }
         else {
-            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", VAL2) ;
+            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", semID) ;
             exit(2) ;
         }
     }
@@ -135,14 +135,14 @@ int OS_Trap(char *IR, struct PCB *Current)
         printf("Detected Signal system call.") ;
         if(semID == 0) {
             printf("Calling Signal on Forks.\n") ;
-            return Signal(Forks[ACC]) ;
+            return Signal(&Forks[ACC]) ;
         }
         else if(semID == 1) {
             printf("Calling Signal on Doorman.\n") ;
-            return Signal(Doorman) ;
+            return Signal(&Doorman) ;
         }
         else {
-            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", VAL2) ;
+            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", semID) ;
             exit(2) ;
         }
     }
@@ -151,7 +151,7 @@ int OS_Trap(char *IR, struct PCB *Current)
         return GetPID(Current) ;
     }
     else {
-        printf("Expected 0, 1, or 2. Got %d. Exiting program.", VAL) ;
+        printf("Expected 0, 1, or 2. Got %d. Exiting program.", sysCall) ;
         exit(3) ;
     }
 }
@@ -209,8 +209,9 @@ int Signal(struct Semaphore *Sema)
     if(Sema->count <= 0) {
         tmp = GetNextProcess(&Sema->SemQ);
         printf("Moving PID %d from SemQ to tail of RQ.\n", Current->PID);
-        MovetoTail(tmp, &RQT);
+        MvToTail(tmp, &RQT);
     }
+    return 0;
 }
 
 /*  GetPID places PID of process in Register R1.
@@ -221,3 +222,5 @@ int GetPID(struct PCB *Current)
     RRegs[1] = Current->PID;
     return 0;
 }
+
+
