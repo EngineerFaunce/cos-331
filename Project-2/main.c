@@ -105,10 +105,10 @@ int main() {
             break ;
     }
 
+    
     return(0) ;
-}
 
-//here
+}
 
 /* New Functions */
 
@@ -134,7 +134,7 @@ int OS_Trap(char *IR, struct PCB *Current)
     if(sysCall == 0) {
         printf("Detected Wait system call. ") ;
         if(semID == 0) {
-            printf("Calling Wait on Forks.\n") ;
+            printf("Calling Wait on Forks[%d].\n", ACC) ;
             return Wait(Current, &Forks[ACC]) ;
         }
         else if(semID == 1) {
@@ -149,7 +149,7 @@ int OS_Trap(char *IR, struct PCB *Current)
     else if(sysCall == 1) {
         printf("Detected Signal system call. ") ;
         if(semID == 0) {
-            printf("Calling Signal on Forks.\n") ;
+            printf("Calling Signal on Forks[%d].\n", ACC) ;
             return Signal(&Forks[ACC]) ;
         }
         else if(semID == 1) {
