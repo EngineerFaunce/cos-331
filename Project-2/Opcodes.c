@@ -1,6 +1,7 @@
 #include "Vars.h"
 #include "Opcodes.h"
 extern int Max_Line ;
+extern int OS_Trap(char *IR, struct PCB *Current) ;
 
 int i, j ;
 
@@ -67,7 +68,7 @@ int ExecuteProc(struct PCB *Current)
 			case 33:   	OP33(IR,&PC) ; Current->IC--; break ; 
 			case 34:   	OP34(IR,&PC) ; Current->IC--; break ; 
 			case 35:   	OP35(IR, &PC) ; Current->IC--; break ; 
-			case 36:	PC++ ; blocked = OS_Trap(IR, Current) ;
+			case 36:	PC++ ; int blocked = OS_Trap(IR, Current) ;
 						if(blocked) { return(-1); } break ; 
 			case 37:	OP37(IR) ; PC++ ; Current->IC-- ; break;
 			case 99: printf("ALL DONE\n") ; Done = 1 ; break;
