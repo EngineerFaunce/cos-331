@@ -38,7 +38,7 @@ void Create_PCBs()
         tmp->Next_PCB = (struct PCB *) malloc (sizeof (struct PCB)) ;
         tmp->Next_PCB->PID = i ;
 
-        tmp->Next_PCB->IC = (rand() % 200) + 5 ; //rand returns 0 .. MAX
+        tmp->Next_PCB->IC = (rand() % 10) + 1 ; //rand returns 0 .. MAX
         tmp->Next_PCB->Next_PCB = NULL ;
         tmp = tmp->Next_PCB ;
     }
