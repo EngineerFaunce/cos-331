@@ -13,6 +13,17 @@
 
 /* Old Functions */
 
+void LoadPrograms()
+{   struct PCB *tmp ;
+  	tmp = RQ ;
+  	for (i = 0; i < 5 ; i++)
+    {
+        LoadProgram(i, &tmp) ;
+        printf("LimitReg = %d. IC = %d\n", tmp->LimitReg, tmp->IC) ;
+        tmp = tmp->Next_PCB ;
+    }
+}
+
 void LoadProgram(int PID, struct PCB **tmp)
 {
     int i, fp ;
