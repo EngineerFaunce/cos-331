@@ -6,12 +6,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Vars.h"
-#include "Functions.h"
 
 struct Semaphore
 {
     int count ;
-    struct PCB *Sem_Queue ;
+    struct PCB *SemQ ;
 } ;
 
 struct Semaphore Forks[5] ;
