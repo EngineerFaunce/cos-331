@@ -55,7 +55,7 @@ int main() {
     Forks = {1,1,1,1,1};
     Doorman = 1;
 
-
+    
 
     while(1)
     {
@@ -118,20 +118,34 @@ int OS_Trap(char *IR, struct PCB *Current)
     int semID = RRegs[RegVal2] ;
 
     if(sysCall == 0) {
-        printf("Detected Wait system call.\n") ;
-        if(semID == 0)
+        printf("Detected Wait system call.") ;
+        if(semID == 0) {
+            printf("Calling Wait on Forks.\n") ;
             return Wait(Current, Forks[ACC]) ;
-        else if(semID == 1)
+        }
+        else if(semID == 1) {
+            printf("Calling Wait on Doorman.\n") ;
             return Wait(Current, Doorman) ;
+        }
         else {
             printf("Expected 0 or 1 in R1. Got %d. Exiting program.", VAL2) ;
             exit(2) ;
         }
-        
     }
     else if(sysCall == 1) {
-        printf("Detected Signal system call.\n") ;
-        return Signal(Forks[ACC]) ;
+        printf("Detected Signal system call.") ;
+        if(semID == 0) {
+            printf("Calling Signal on Forks.\n") ;
+            return Signal(Forks[ACC]) ;
+        }
+        else if(semID == 1) {
+            printf("Calling Signal on Doorman.\n") ;
+            return Signal(Doorman) ;
+        }
+        else {
+            printf("Expected 0 or 1 in R1. Got %d. Exiting program.", VAL2) ;
+            exit(2) ;
+        }
     }
     else if(sysCall == 2) {
         printf("Detected GetPID system call.\n") ;
