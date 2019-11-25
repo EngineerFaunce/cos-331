@@ -707,11 +707,14 @@ int ExecuteProc(struct PCB *Current)
 	// modulo function
 	void OP37(char *IR)
 	{
-		int VAL, VAL2;
+		int REG1, REG2, VAL, VAL2;
 		printf("Opcode = 37. Perform modulo operation\n") ;
 		PrintIR(IR) ;
-		VAL = ParseOp1Reg(IR) ;
-		VAL2 = ParseOp2Reg(IR) ;
+		REG1 = ParseOp1Reg(IR) ;
+		REG2 = ParseOp2Reg(IR) ;
+		
+		VAL = RRegs[REG1];
+		VAL2 = RRegs[REG2] ;
 
 		ACC = VAL % VAL2 ;
 		printf("ACC set to value %d\n", ACC) ;
