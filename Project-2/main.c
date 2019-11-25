@@ -47,15 +47,33 @@ int Max_Line = 0;
 int main() {
     for(int x=0; x < 5; x++)
         Forks[x].count = 1;
-    Doorman.count = 1;
+    Doorman.count = 4;
+
+    /* Included this to avoid having to create a second main.c file */
+    char userInput[15];
+    printf("Enter either \"forks.pb\" or \"doorman.pb\" to read in a file.\n") ;
+    scanf("%s", userInput) ;
+
+    if( strcmp(userInput, "forks.pb") != 0 && strcmp(userInput, "doorman.pb") != 0 ) {
+        printf("File \"%s\" not found. Terminating program.\n", userInput);
+        exit(1) ;
+    }
 
     Create_PCBs();
-    LoadPrograms();
+    LoadPrograms(userInput);
+
+    int num;                            // time-slice for processes
 
     while(1)
     {
+        num = (rand() % 10) + 1 ;       // random int between 1-10
         Current = GetNextProcess(&RQ) ;
         RestoreState(Current) ;
+        
+
+        Current->IC = num ;             // remove to illustrate deadlock in forks.pb
+        
+
         printf("CURRENT PID %d, IC %d\n", Current->PID, Current->IC) ;
         int Completed = ExecuteProc(Current) ;
 
