@@ -205,6 +205,6 @@ int Signal(struct Semaphore *Sema)
 */
 int GetPID(struct PCB *Current)
 {
-    R1 = Current->PID;
+    RRegs[1] = Current->PID;
     return 0;
 }
