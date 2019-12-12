@@ -11,98 +11,22 @@
 #include "Vars.h"
 #include "Opcodes.h"
 
-struct PCB *GetNextProcess(struct PCB **Head);
-void DeletePCB(struct PCB *Current);
-void MvToTail (struct PCB *Current, struct PCB **RQT);
-void PrintQ(struct PCB *Head);
 void RestoreState(struct PCB *NextProc);
 void SaveState(struct PCB **PrevProc);
-void Create_PCBs() ;
-void LoadPrograms(char file[]) ;
-void LoadProgram(int PID, struct PCB **tmp, char file[]);
+void DeletePCB(struct PCB *Current);
+struct PCB *GetNextProcess(struct PCB **Head);
+void MvToTail(struct PCB *Current, struct PCB **RQT);
+void PrintQ(struct PCB *Head);
 
 /* These variables are associated with the implementation of the VM */
-int i ;
-char input_line [7] ;
+int i;
+char input_line[7];
 
-/* Old Functions */
+/* Functions used in main.c */
 
-void Create_PCBs()
+// Restores the state of the process that is set to begin its execution
+void RestoreState(struct PCB *NextProc)
 {
-    RQ = (struct PCB *) malloc (sizeof (struct PCB)) ;
-    RQ->PID = 0;
-    RQ->IC = (rand() % 200) + 5 ;
-    tmp = RQ ;
-    for(i = 1; i < 5; i++)
-    {       
-        tmp->Next_PCB = (struct PCB *) malloc (sizeof (struct PCB)) ;
-        tmp->Next_PCB->PID = i ;
-
-        tmp->Next_PCB->IC = (rand() % 10) + 1 ; //rand returns 0 .. MAX
-        tmp->Next_PCB->Next_PCB = NULL ;
-        tmp = tmp->Next_PCB ;
-    }
-
-    RQT = tmp ;
-    RQT->Next_PCB = NULL ;
-}
-
-void LoadPrograms(char file[])
-{   struct PCB *tmp ;
-  	tmp = RQ ;
-  	for (i = 0; i < 5 ; i++)
-    {
-        LoadProgram(i, &tmp, file) ;
-        printf("LimitReg = %d. IC = %d\n", tmp->LimitReg, tmp->IC) ;
-        tmp = tmp->Next_PCB ;
-    }
-}
-
-void LoadProgram(int PID, struct PCB **tmp, char file[])
-{
-    int i, fp ;
-    int program_line = 100 * PID ;
-    (*tmp)->BaseReg  = program_line ;
-    (*tmp)->LimitReg = program_line + 100;
-    fp = open(file, O_RDONLY) ; //always check the return value.
-    printf("Open is %d\n", fp) ;
-
-    if (fp < 0) //error in read
-    {       
-        printf("Could not open file\n");
-        exit(0) ;
-    }
-
-    int ret = read (fp, input_line, 8) ; //returns number of characters read`
-    printf("***Number of char read: %d***\n", ret);
-
-    while (1)
-    {
-        if (ret <= 0) //indicates end of file or error
-            break ; //breaks out of infinite loop
-
-        printf("Copying Program line %d into memory\n", program_line) ;
-        for (i = 0; i < 6 ; i++)
-        {
-            memory[program_line][i] = input_line[i] ;
-            printf("%c ", memory[program_line][i]) ;
-        }
-        printf("\n") ;
-
-        ret = read (fp, input_line, 8) ;
-        printf("***Number of char read: %d***\n", ret);
-        program_line++ ; //now at a new line in the prog
-    }
-
-    printf("Read in Code. Closing File\n") ;
-    printf("----------------------------------------------\n") ;
-    close(fp) ;
-}
-
-/*	This function restores the state of the process that is set to begin its
-    execution
-*/
-void RestoreState(struct PCB *NextProc) {
     PRegs[0] = NextProc->P0;
     PRegs[1] = NextProc->P1;
     PRegs[2] = NextProc->P2;
@@ -123,10 +47,9 @@ void RestoreState(struct PCB *NextProc) {
     PC = NextProc->PC;
 }
 
-/*	This function saves the state of the VM into the PCB of the process that
-    just completed its "time slice"
-*/
-void SaveState(struct PCB **PrevProc) {
+// This function saves the state of the VM into the PCB of the process that just completed its "time slice"
+void SaveState(struct PCB **PrevProc)
+{
     (*PrevProc)->P0 = PRegs[0];
     (*PrevProc)->P1 = PRegs[1];
     (*PrevProc)->P2 = PRegs[2];
@@ -147,48 +70,54 @@ void SaveState(struct PCB **PrevProc) {
     (*PrevProc)->PC = PC;
 }
 
-/*	Deletes the PCB (using free) */
-void DeletePCB(struct PCB *Current) {
+// Frees the current process
+void DeletePCB(struct PCB *Current)
+{
     Current->Next_PCB = NULL;
     free(Current);
-} 
+}
 
+// Removes the process at the head of the Ready Queue and returns a pointer to it
 struct PCB *GetNextProcess(struct PCB **Head)
 {
-    struct PCB *tmp ;
-    tmp = *Head ;
-    if (tmp == NULL) {
-        printf("No more processes to get fool!\n") ;
-        exit(0) ;
+    struct PCB *tmp;
+    tmp = *Head;
+    if (tmp == NULL)
+    {
+        printf("No more processes to get fool!\n");
+        exit(0);
     }
-    *Head = (*Head)->Next_PCB ;
-    tmp->Next_PCB = NULL ;
-    return(tmp) ;
+    *Head = (*Head)->Next_PCB;
+    tmp->Next_PCB = NULL;
+    return (tmp);
 }
 
-/*this function takes a pointer to the currently executing process and the address of the Ready
-  Queue Tail. It moves the Current process to the tail of the list and updates RQT.
-*/            
+/*  Takes a pointer to the currently executing process and moves it to the tail of
+    the Ready Queue (RQT)
+*/
 void MvToTail(struct PCB *Current, struct PCB **RQT)
 {
-    (*RQT)->Next_PCB = Current ;
-    *RQT = Current ; 
-    (*RQT)->Next_PCB = NULL ;
+    (*RQT)->Next_PCB = Current;
+    *RQT = Current;
+    (*RQT)->Next_PCB = NULL;
     if (RQ == NULL)
-        RQ = *RQT ;
+        RQ = *RQT;
 }
 
+// Prints out the Ready Queue
 void PrintQ(struct PCB *Head)
 {
-    struct PCB *tmp ;
-    tmp = Head ;
-    if (tmp == NULL) {
-        printf("Ready Queue is empty!\n") ;
-        return ;
+    struct PCB *tmp;
+    tmp = Head;
+    if (tmp == NULL)
+    {
+        printf("Ready Queue is empty!\n");
+        return;
     }
-    while(tmp != NULL) {
-        printf("Process ID %d. \n", tmp->PID) ;
-        tmp = tmp->Next_PCB ;
+    while (tmp != NULL)
+    {
+        printf("Process ID %d. \n", tmp->PID);
+        tmp = tmp->Next_PCB;
     }
 }
 
