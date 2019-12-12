@@ -87,8 +87,7 @@ int ExecuteProc(struct PCB *Current)
 		memory access operations.
 	*/
 
-	// This function returns the integer value of operand 1 
-	// when this operand is an immediate two-byte integer. 
+	// returns the integer value of operand 1 when this operand is a two-byte integer. 
 	int ParseOp1 (char *IR) 
 	{
 		int VAL = (int) (IR[2] - 48) * 10 + (int) (IR[3] - 48) ;
