@@ -7,33 +7,26 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Vars.h"
+#include "Functions.h"
 
-extern void Print_Page_Table(int);
-struct PCB *New_Program;
-extern void Free_Pages(struct PCB *);
-extern void printMEM(int);
+// Found in new.c
 extern struct PCB *Admit_Program();
-void RestoreState(struct PCB *);
-int ExecuteProc(struct PCB *);
-void DeletePCB(struct PCB *);
-void MvToTail(struct PCB *, struct PCB **);
-void SaveState(struct PCB **);
-void PrintQ(struct PCB *);
-struct PCB *GetNextProcess(struct PCB **);
-void Place_On_Queue(struct PCB *);
+extern void Place_On_Queue();
+extern void Print_Page_Table(int);
+extern void Free_Pages(struct PCB *);
 
+// Found in Opcodes.c
 extern int ExecuteProc(struct PCB *);
+extern void printMEM(int);
 
-int Max_Line = 0;
+struct PCB *New_Program;
 
 /*These are variables representing the VM itself*/
-
+int Max_Line = 0;
 int program_line = 0; // For loading program into Memory
 
 /*These variables are associated with the implementation of the VM*/
-int fp;
-int i;
-int j, k;
+int fp, i, j, k;
 char input_line[7];
 
 int main(int argc, char *argv[])
@@ -59,9 +52,9 @@ int main(int argc, char *argv[])
         if (Completed)
         {
             printf("The program in PCB %d has completed its exeuction and will be terminated\n", Current->PID);
-            printf("Removing PID %d\n", Current->PID); //Program has completed execution and will terminate
+            printf("Removing PID %d\n", Current->PID); // Program has completed execution and will terminate
             Free_Pages(Current);
-            DeletePCB(Current); //Calls DeletePCB, expanded upon below
+            DeletePCB(Current); // Calls DeletePCB, expanded upon below
 
             while (1)
             {
@@ -76,16 +69,17 @@ int main(int argc, char *argv[])
         else
         {
             SaveState(&Current);
-            printf("Moving PID %d to TAIL\n", Current->PID); //Moves the PCB back to the end of the queue
+            printf("Moving PID %d to TAIL\n", Current->PID); // Moves the PCB back to the end of the queue
             MvToTail(Current, &RQT);
             printf("RQT is %d\n", RQT->PID);
             if (RQ == NULL)
                 RQ = RQT;
         }
-        PrintQ(RQ); //Prints the state of the ready queue
+        PrintQ(RQ); // Prints the state of the ready queue
         sleep(1);
-        if (RQ == NULL) //If RQis NULL this breaks the while loop and we're done
+        if (RQ == NULL) // If RQ is NULL this breaks the while loop and we're done
             break;
     }
+
     printMEM(100); // prints out the final state of the main memory
 }
