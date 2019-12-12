@@ -9,24 +9,35 @@
 #include <fcntl.h>
 #include "Vars.h"
 
+struct PCB *Admit_Program();
+void Place_On_Queue(struct PCB *);
+void Allocate_Pages(struct Program *);
 void Print_Page_Table(int);
+void Free_Pages(struct PCB *Current);
 void Print_Frames();
 int Find_Frame();
-struct PCB *Admit_Program();
+
 struct Program *New_Allocation;
-void Allocate_Pages(struct Program *);
+
 int NAF = 10;
 int Free_Frames[10] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-int fp;
-
 int On_Disk[10] = {5, 3, 3, 5, 5, 3, 3, 3, 5, 5};
 int disk_index = 0;
 char temp_memory[21][6];
 char input[7];
 int num_requested;
 
-int i, j, k;
+int fp, i, j, k;
 
+/*
+Admits a program into memory with the following steps:
+    - Determines the next program to admit
+    - Determines the number of pages the program requires
+    - Determines if the program can be brought into memory
+        + If it cannot, return NULL
+        + Else, allocate page frames, setup processes' page table, copies code
+          into into allocated pages, and return a pointer to newly allocated PCB
+*/
 struct PCB *Admit_Program()
 {
     static int First = 1;
@@ -71,7 +82,7 @@ struct PCB *Admit_Program()
 
     if (num_requested == 5)
     {
-        fp = open("Fib.PB", O_RDONLY);
+        fp = open("fibonacci.pb", O_RDONLY);
         New_Allocation->Data_Pages = 2;
         New_Allocation->Total_Pages = 5;
         New_Allocation->New_PCB->Total_Pages = 5;
@@ -79,7 +90,7 @@ struct PCB *Admit_Program()
 
     else
     {
-        fp = open("LittleFib.PB", O_RDONLY);
+        fp = open("LittleFib.pb", O_RDONLY);
         printf("Opened Little FIB with %d\n", fp);
         New_Allocation->Data_Pages = 0;
         New_Allocation->Total_Pages = 3;
@@ -100,9 +111,15 @@ struct PCB *Admit_Program()
     return (New_Allocation->New_PCB);
 }
 
-void Allocate_Pages(struct Program *NP)
-{ //see how many pages needed
+// This function takes the PCB returned by Admit_Program() and places it at the tail of the RQ
+void Place_On_Queue(struct PCB *Current)
+{
+    
+}
 
+// Determines how many pages are required for a program
+void Allocate_Pages(struct Program *NP)
+{
     int i, j, k, m;
     int PID;
     int Frame;
@@ -134,6 +151,7 @@ void Allocate_Pages(struct Program *NP)
     }
 }
 
+/* Prints the page table entries for the requested process. */
 void Print_Page_Table(int PID)
 {
     int i;
@@ -141,6 +159,9 @@ void Print_Page_Table(int PID)
         printf("Page table %d %d is %d\n", PID, i, Page_Table[PID][i]);
 }
 
+/* Frees the pages used by a process when it completes its execution
+ * and frees up the pages it has occupied. 
+*/
 void Free_Pages(struct PCB *Current)
 {
     int i, j;
