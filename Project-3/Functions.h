@@ -39,6 +39,7 @@ void RestoreState(struct PCB *NextProc)
 
     BaseRegister = NextProc->BaseReg;
     LimitRegister = NextProc->LimitReg;
+    TotalPages = NextProc->Total_Pages;
 
     ACC = NextProc->ACC;
     PSW[0] = NextProc->PSW[0];
@@ -62,6 +63,7 @@ void SaveState(struct PCB **PrevProc)
 
     (*PrevProc)->BaseReg = BaseRegister;
     (*PrevProc)->LimitReg = LimitRegister;
+    (*PrevProc)->Total_Pages = TotalPages;
 
     (*PrevProc)->ACC = ACC;
     (*PrevProc)->PSW[0] = PSW[0];
