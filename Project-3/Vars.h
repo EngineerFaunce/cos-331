@@ -47,6 +47,7 @@ int R2;
 int R3;
 
 int BaseRegister, LimitRegister;
+int TotalPages;
 
 int ACC;
 char PSW[2];
