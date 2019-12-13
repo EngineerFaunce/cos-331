@@ -4,6 +4,8 @@
 extern int Max_Line ;
 extern int OS_Trap(char *IR, struct PCB *Current) ;
 
+int Translate_Address(int Logical_Address);
+
 int i, j ;
 
 int ExecuteProc(struct PCB *Current)
@@ -217,6 +219,12 @@ void printMemRange()
 					printf("%c ", memory[i][j]) ;
 			printf("\n") ;
 	}
+}
+
+// Translates a logical address into a physical address
+int Translate_Address(int Logical_Address)
+{
+
 }
 
 
