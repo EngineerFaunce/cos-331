@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Vars.h"
+#include "Functions.h"
 
 struct PCB *Admit_Program();
 void Place_On_Queue(struct PCB *);
@@ -21,12 +22,14 @@ struct Program *New_Allocation;
 
 int NAF = 10;
 int Free_Frames[10] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-int On_Disk[10] = {5, 3, 3, 5, 5, 3, 3, 3, 5, 5};
-int disk_index = 0;
-char temp_memory[21][6];
-char input[7];
-int num_requested;
+int On_Disk[10] = {5, 3, 3, 5, 5, 3, 3, 3, 5, 5};           // simulated storage that contains programs of different sizes
+int disk_index = 0;                                         // index used to access On_Disk array
+int num_requested;                                          // number of pages requested
+//char temp_memory[21][6];                                    // temp memory (which doesn't seem to be used)
+char input[7];                                              // used for reading input from file
 
+
+/* Global variables used in function implementations */
 int fp, i, j, k;
 
 /*
@@ -114,7 +117,7 @@ struct PCB *Admit_Program()
 // This function takes the PCB returned by Admit_Program() and places it at the tail of the RQ
 void Place_On_Queue(struct PCB *Current)
 {
-    
+    MvToTail(Current, &RQT);
 }
 
 // Determines how many pages are required for a program
