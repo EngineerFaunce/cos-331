@@ -8,6 +8,24 @@
 #include <fcntl.h>
 #include "Vars.h"
 
+void Create_PCBs();
+void LoadPrograms();
+void LoadProgram(int, struct PCB **);
+struct PCB *GetNextProcess(struct PCB **);
+void DeletePCB(struct PCB *);
+void MvToTail(struct PCB *, struct PCB **);
+void PrintQ(struct PCB *);
+void RestoreState(struct PCB *);
+void SaveState(struct PCB **);
+
+/*These variables are associated with the implementation of the VM*/
+int fp;
+int i, j, k;
+char input_line[7];
+
+/*These are variables representing the VM itself*/
+int program_line = 0; // For loading program into Memory
+
 void Create_PCBs()
 {
     RQ = (struct PCB *)malloc(sizeof(struct PCB));
@@ -55,7 +73,7 @@ void LoadProgram(int PID, struct PCB **tmp)
         exit(0);
     }
 
-    int ret = read(fp, input_line, 8); //returns number of characters read`
+    int ret = read(fp, input_line, 7); //returns number of characters read`
     printf("***Number of char read: %d***\n", ret);
 
     while (1)
@@ -71,7 +89,7 @@ void LoadProgram(int PID, struct PCB **tmp)
         }
         printf("\n");
 
-        ret = read(fp, input_line, 8);
+        ret = read(fp, input_line, 7);
         printf("***Number of char read: %d***\n", ret);
         program_line++; //now at a new line in the prog
     }
