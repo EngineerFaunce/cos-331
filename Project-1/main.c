@@ -9,16 +9,6 @@
 #include "Vars.h"
 #include "Functions.h"
 
-void Create_PCBs();
-void LoadPrograms();
-void LoadProgram(int, struct PCB **);
-void RestoreState(struct PCB *);
-void DeletePCB(struct PCB *);
-void MvToTail(struct PCB *, struct PCB **);
-void SaveState(struct PCB **);
-void PrintQ(struct PCB *);
-struct PCB *GetNextProcess(struct PCB **);
-
 /*
 The function ExecuteProc is external to this program (simply to keep the main program simple), and 
 executes a process for the number of instructions in its "time-slice", 
@@ -30,15 +20,6 @@ extern void printMEM(int);
 extern void printMemRange();
 
 int Max_Line = 0;
-
-/*These are variables representing the VM itself*/
-
-int program_line = 0; // For loading program into Memory
-
-/*These variables are associated with the implementation of the VM*/
-int fp;
-int i, j, k;
-char input_line[7];
 
 int main(int argc, char *argv[])
 {
