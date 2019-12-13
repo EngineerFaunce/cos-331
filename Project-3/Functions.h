@@ -18,10 +18,6 @@ struct PCB *GetNextProcess(struct PCB **Head);
 void MvToTail(struct PCB *Current, struct PCB **RQT);
 void PrintQ(struct PCB *Head);
 
-/* These variables are associated with the implementation of the VM */
-int i;
-char input_line[7];
-
 /* Functions used in main.c */
 
 // Restores the state of the process that is set to begin its execution
