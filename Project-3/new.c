@@ -49,9 +49,11 @@ int fp, i, j, k;
 */
 struct PCB *Admit_Program()
 {
-    static int First = 1;
+    static int First = 1;   // since these are static, they keep their values between invocations
     static int PID = 0;
     int Num_Lines;
+
+    // initializes Page_Table by filling with -1
     if (First)
     {
         First = 0;
@@ -59,14 +61,16 @@ struct PCB *Admit_Program()
             for (j = 0; j < 5; j++)
                 Page_Table[i][j] = -1;
     }
+
+    // prevents an index out of bounds error
     if (disk_index >= 10)
     {
         return (NULL);
     }
 
-    num_requested = On_Disk[disk_index];
+    num_requested = On_Disk[disk_index];    // # of pages requested = program's # of required pages
     printf("Number of Pages Requested is %d\n", num_requested);
-    printf("There are %d pages left\n", NAF);
+    printf("There are %d pages left\n", NAF);   // # of available frames left
     if (num_requested > NAF)
     {
         printf("NOT ENOUGH PAGES\n");
@@ -107,6 +111,8 @@ struct PCB *Admit_Program()
     }
 
     Num_Lines = 21;
+
+    // reading file input into Program's temp memory
     for (i = 0; i < Num_Lines; i++)
     {
         k = read(fp, input, 7);
@@ -120,20 +126,6 @@ struct PCB *Admit_Program()
     return (New_Allocation->New_PCB);
 }
 
-// This function takes the PCB returned by Admit_Program() and places it at the tail of the RQ
-void Place_On_Queue(struct PCB *Current)
-{
-    if(RQ == NULL) {
-        RQ = (struct PCB *)malloc(sizeof(struct PCB));
-        RQT = (struct PCB *)malloc(sizeof(struct PCB));
-        RQ = Current;
-        RQ->Next_PCB = NULL;
-        RQT = RQ;
-    }
-    else
-        MvToTail(Current, &RQT);
-}
-
 // Determines how many pages are required for a program
 void Allocate_Pages(struct Program *NP)
 {
@@ -142,6 +134,7 @@ void Allocate_Pages(struct Program *NP)
     int Frame;
     int code_pages;
     int num_data, num_needed;
+    
     PID = NP->New_PCB->PID;
     num_needed = NP->Total_Pages;
     code_pages = ceil((double)(NP->Num_Lines / 10.0));
@@ -166,6 +159,21 @@ void Allocate_Pages(struct Program *NP)
         Page_Table[PID][code_pages + i] = Find_Frame();
         NAF--;
     }
+}
+
+/* Takes the PCB returned by Admit_Program() and places it at the tail of the RQ */
+void Place_On_Queue(struct PCB *Current)
+{
+    if (RQ == NULL)
+    {
+        RQ = (struct PCB *)malloc(sizeof(struct PCB));
+        RQT = (struct PCB *)malloc(sizeof(struct PCB));
+        RQ = Current;
+        RQ->Next_PCB = NULL;
+        RQT = RQ;
+    }
+    else
+        MvToTail(Current, &RQT);
 }
 
 /* Prints the page table entries for the requested process. */
