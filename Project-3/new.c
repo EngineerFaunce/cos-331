@@ -9,7 +9,6 @@
 #include <fcntl.h>
 #include <math.h>
 #include "Vars.h"
-//#include "Functions.h"
 
 struct PCB *Admit_Program();
 void Place_On_Queue(struct PCB *);
