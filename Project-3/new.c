@@ -123,7 +123,15 @@ struct PCB *Admit_Program()
 // This function takes the PCB returned by Admit_Program() and places it at the tail of the RQ
 void Place_On_Queue(struct PCB *Current)
 {
-    MvToTail(Current, &RQT);
+    if(RQ == NULL) {
+        RQ = (struct PCB *)malloc(sizeof(struct PCB));
+        RQT = (struct PCB *)malloc(sizeof(struct PCB));
+        RQ = Current;
+        RQ->Next_PCB = NULL;
+        RQT = RQ;
+    }
+    else
+        MvToTail(Current, &RQT);
 }
 
 // Determines how many pages are required for a program
