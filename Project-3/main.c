@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         {
             printf("The program in PCB %d has completed its exeuction and will be terminated\n", Current->PID);
             printf("Removing PID %d\n", Current->PID); // Program has completed execution and will terminate
-            Free_Pages(Current);
+            //Free_Pages(Current);
             DeletePCB(Current); // Calls DeletePCB, expanded upon below
 
             while (1)
