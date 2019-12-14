@@ -7,13 +7,19 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Vars.h"
-#include "Functions.h"
 
 // Found in new.c
 extern struct PCB *Admit_Program();
 extern void Place_On_Queue();
 extern void Print_Page_Table(int);
 extern void Free_Pages(struct PCB *);
+
+extern void RestoreState(struct PCB *NextProc);
+extern void SaveState(struct PCB **PrevProc);
+extern void DeletePCB(struct PCB *Current);
+extern struct PCB *GetNextProcess(struct PCB **Head);
+extern void MvToTail(struct PCB *Current, struct PCB **RQT);
+extern void PrintQ(struct PCB *Head);
 
 // Found in Opcodes.c
 extern int ExecuteProc(struct PCB *);
