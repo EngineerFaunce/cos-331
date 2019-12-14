@@ -2,7 +2,6 @@
 #include "Opcodes.h"
 
 extern int Max_Line ;
-extern int OS_Trap(char *IR, struct PCB *Current) ;
 
 int Translate_Address(int Logical_Address);
 
@@ -70,11 +69,8 @@ int ExecuteProc(struct PCB *Current)
 			case 33:   	OP33(IR,&PC) ; Current->IC--; break ; 
 			case 34:   	OP34(IR,&PC) ; Current->IC--; break ; 
 			case 35:   	OP35(IR, &PC) ; Current->IC--; break ; 
-			case 36:	PC++ ; int blocked = OS_Trap(IR, Current) ;
-						if(blocked) { return(-1); } break ; 
-			case 37:	OP37(IR) ; PC++ ; Current->IC-- ; break;
-			case 99: printf("ALL DONE\n") ; Done = 1 ; break;
-			default: printf("Instruction %d not found!~\n", opcode) ;
+			case 99:    printf("ALL DONE\n") ; Done = 1 ; break;
+			default:    printf("Instruction %d not found!~\n", opcode) ;
 			exit(0) ;
 	    }
 
@@ -694,23 +690,4 @@ void OP35(char *IR, short int *PC)
 	*PC = ParseOp1(IR) ;
 	printf("New PC is %d\n", *PC) ;
 	printf("*****************************************\n\n") ;
-}
-
-/* Note that there is no Opcode 36 since it is handled inside the switch case */
-
-// modulo function
-void OP37(char *IR)
-{
-	int REG1, REG2, VAL, VAL2;
-	printf("Opcode = 37. Perform modulo operation\n") ;
-	PrintIR(IR) ;
-	REG1 = ParseOp1Reg(IR) ;
-	REG2 = ParseOp2Reg(IR) ;
-	
-	VAL = RRegs[REG1];
-	VAL2 = RRegs[REG2] ;
-
-	ACC = VAL % VAL2 ;
-	printf("ACC set to value %d\n", ACC) ;
-	printf("*********************************************\n\n") ;
 }
