@@ -73,7 +73,7 @@ void LoadProgram(int PID, struct PCB **tmp, char file[])
         exit(0) ;
     }
 
-    int ret = read (fp, input_line, 8) ; //returns number of characters read`
+    int ret = read (fp, input_line, 7) ; //returns number of characters read`
     printf("***Number of char read: %d***\n", ret);
 
     while (1)
@@ -89,7 +89,7 @@ void LoadProgram(int PID, struct PCB **tmp, char file[])
         }
         printf("\n") ;
 
-        ret = read (fp, input_line, 8) ;
+        ret = read (fp, input_line, 7) ;
         printf("***Number of char read: %d***\n", ret);
         program_line++ ; //now at a new line in the prog
     }
