@@ -226,12 +226,12 @@ int Signal(struct Semaphore *Sema)
 {
     Sema->count++;
     struct PCB *tmp;
-    printf("In Signal with PID %d. Sem.count = %d\n", Current->PID, Sema->count);
+    printf("In Signal with Sem.count = %d\n", Sema->count);
 
     if (Sema->count <= 0)
     {
         tmp = GetNextProcess(&Sema->SemQ);
-        printf("Moving PID %d from SemQ to tail of RQ.\n", Current->PID);
+        printf("Moving PID %d from SemQ to tail of RQ.\n", tmp->PID);
         MvToTail(tmp, &RQT);
     }
     return 0;
