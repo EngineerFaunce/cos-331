@@ -35,7 +35,6 @@ void OP33(char *, short int *) ;
 void OP34(char *, short int *) ;
 void OP35(char *, short int *) ;
 void OP37(char *) ;
-void OP99() ;
 
 /*Other functions*/
 
