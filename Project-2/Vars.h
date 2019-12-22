@@ -11,44 +11,43 @@
 
 struct PCB
 {
-    struct PCB *Next_PCB ;
-    int PID ;                       // process ID (0,1,2,3, etc.)
-    short int PC, P0, P1, P2, P3;   // program counter and pointer registers
-    int IC ;                        // number of instructions before preemption (i.e., time slice)
-    int R0, R1, R2, R3 ;            // general purpose registers
-    char PSW[2] ;
-    int ACC ;                       // accumulator
-    int BaseReg, LimitReg ;
-} ;
-
-/* Pointers to head + tail of ready queue as well as current process */
-struct PCB *RQ, *RQT, *Current, *tmp ;
+    struct PCB *Next_PCB;
+    int PID;                      // process ID (0,1,2,3, etc.)
+    short int PC, P0, P1, P2, P3; // program counter and pointer registers
+    int IC;                       // number of instructions before preemption (i.e., time slice)
+    int R0, R1, R2, R3;           // general purpose registers
+    char PSW[2];                  // process status word
+    int ACC;                      // accumulator
+    int BaseReg, LimitReg;        // minimum and maximum memory locations for a process
+};
 
 /* These are variables representing the VM itself */
 
-char IR[6] ;
-short int PC ;
+// Pointers to head + tail of ready queue as well as current process
+struct PCB *RQ, *RQT, *Current, *tmp;
 
-/* Pointer registers */
-short int P0 ;
-short int P1 ;
-short int P2 ;
-short int P3 ;
+char IR[6];         // instruction register
+short int PC;       // program counter
+short int PRegs[4]; // array for pointer registers used by VM
+short int RRegs[4]; // array for general registers used by VM
 
-short int PRegs[4] ;
-short int RRegs[4] ;
+// Pointer registers
+short int P0;
+short int P1;
+short int P2;
+short int P3;
 
-/* General-Purpose registers */
-int R0 ;    
-int R1 ;
-int R2 ;
-int R3 ;
+// General-Purpose registers
+int R0;
+int R1;
+int R2;
+int R3;
 
-int BaseRegister, LimitRegister ;
+int BaseRegister, LimitRegister;
 
-int ACC ;
-char PSW[2] ;
-char memory [1000][6]  ;    // this is the program memory for all programs
-short int opcode ;            
+int ACC;              // accumulator
+char PSW[2];          // process status word
+char memory[1000][6]; // memory where programs and data will be stored
+short int opcode;
 
 #endif
