@@ -21,6 +21,12 @@ struct PCB
     int BaseReg, LimitReg;        // minimum and maximum memory locations for a process
 };
 
+struct Semaphore
+{
+    int count;
+    struct PCB *SemQ;
+};
+
 /* These are variables representing the VM itself */
 
 // Pointers to head + tail of ready queue as well as current process
